@@ -42,6 +42,7 @@ import com.taxidriver.app.Connection.Utils;
 import com.taxidriver.app.MainActivity;
 import com.taxidriver.app.Map.Intermediate;
 import com.taxidriver.app.Model.User;
+import com.taxidriver.app.Password;
 import com.taxidriver.app.R;
 import com.taxidriver.app.Utils.LocalPersistence;
 import com.taxidriver.app.Utils.NetworkUtil;
@@ -173,6 +174,7 @@ public class PhoneNumber extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(PhoneNumber.this, "SUCCESS", Toast.LENGTH_SHORT).show();
                         Intent intent= new Intent(getApplicationContext(), Intermediate.class);
                         intent.putExtras(bundle);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     } else {
@@ -192,14 +194,15 @@ public class PhoneNumber extends AppCompatActivity implements View.OnClickListen
 //    dialog.show();
         if(NetworkUtil.isConnectedToWifi(PhoneNumber.this)||NetworkUtil.isConnectedToMobileNetwork(PhoneNumber.this)){
 
-            mApi.signup("android",
-                    currentUser.getmDeviceToken(),
+            mApi.signup(
                     currentUser.getmDeviceId(),
-                    "manual",
+                    "android",
+                    currentUser.getmDeviceToken(),
                     currentUser.getmFirstName(),
                     currentUser.getmLastName(),
                     currentUser.getmEmail(),
                     currentUser.getmPhoneNumber(),
+                    currentUser.getmPassword(),
                     currentUser.getmPassword()).enqueue(new Callback<SignUpResponse>() {
                 @Override
                 public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
@@ -207,13 +210,12 @@ public class PhoneNumber extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(PhoneNumber.this, "Successfull", Toast.LENGTH_SHORT).show();
                         Log.e("SignUp", "getAccessToken: "+response.body().getAccessToken());
                         Log.e("SignUp", "getEmail: "+response.body().getEmail());
-                       User user=new User(response.body().getEmail(),response.body().getFirstName(),response.body().getLastName(),"",response.body().getMobile(),response.body().getDevice().getId().toString(),response.body().getDevice().getToken(),response.body().getAvatar().toString(),response.body().getAccessToken());
-                        LocalPersistence.witeObjectToFile(context,user);
+                       User user=new User(response.body().getEmail(),response.body().getFirstName(),response.body().getLastName(), Password.pass,response.body().getMobile(),response.body().getDevice().getId().toString(),response.body().getDevice().getToken()," ",response.body().getAccessToken());
+                        LocalPersistence.witeObjectToFile(PhoneNumber.this,user);
 //                        SharedPreferenceHelper.setSharedPreferenceString(PhoneNumber.this,"accesstoken",response.body().getResponse().getAccessToken());
                     }
                     else{
-                        Toast.makeText(PhoneNumber.this, "Failed", Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(PhoneNumber.this, response.message(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override

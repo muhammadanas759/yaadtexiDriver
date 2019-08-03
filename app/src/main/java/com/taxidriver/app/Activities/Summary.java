@@ -37,11 +37,15 @@ User data;
             @Override
             public void onResponse(Call<SummaryResponse> call, Response<SummaryResponse> response) {
                 if(response.isSuccessful()){
+                    Toast.makeText(Summary.this, "success", Toast.LENGTH_SHORT).show();
 ridecount.setText(response.body().getCompletedRides().toString());
 revenuecount.setText(response.body().getRevenue().toString());
 schdulecount.setText(response.body().getScheduledRides().toString());
 cancelcount.setText(response.body().getCancelRides().toString());
 
+                }
+                else {
+                    Toast.makeText(Summary.this, " not", Toast.LENGTH_SHORT).show();
                 }
             }
 

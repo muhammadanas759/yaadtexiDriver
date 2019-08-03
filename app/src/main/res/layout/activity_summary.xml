@@ -48,7 +48,7 @@
     android:layout_width="60dp"
     android:layout_height="60dp"
     android:layout_alignParentRight="true"
-    android:src="@drawable/checked"
+    android:src="@drawable/rides"
     android:layout_alignParentTop="true"
     android:layout_margin="10dp"/>
 </RelativeLayout>
@@ -87,7 +87,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/checked"
+            android:src="@drawable/revenues"
             android:layout_alignParentTop="true"
             android:layout_margin="10dp"/>
     </RelativeLayout>
@@ -125,7 +125,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/checked"
+            android:src="@drawable/schdule"
             android:layout_alignParentTop="true"
             android:layout_margin="10dp"/>
     </RelativeLayout>
@@ -162,7 +162,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/checked"
+            android:src="@drawable/cancell"
             android:layout_alignParentTop="true"
             android:layout_margin="10dp"/>
     </RelativeLayout>

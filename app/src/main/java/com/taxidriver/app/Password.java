@@ -43,7 +43,7 @@ public class Password extends AppCompatActivity {
     private ImageButton mNextbtn;
 
     private Services mApi;
-
+public static String pass;
     private EditText mPassword;
     private void init() {
 
@@ -79,12 +79,12 @@ public class Password extends AppCompatActivity {
 
     private void signIn() {
         String email =getIntent().getExtras().getString("email");
-        String password=mPassword.getText().toString();
+        pass=mPassword.getText().toString();
         final ProgressDialog dialog=new ProgressDialog(Password.this,R.style.AppCompatAlertDialogStyle);
         dialog.setMessage("Signing In");
         dialog.show();
 
-        if (!(password.isEmpty() && password.length()<6)){
+        if (!(pass.isEmpty() && pass.length()<6)){
 
             if(NetworkUtil.isConnectedToWifi(Password.this)||NetworkUtil.isConnectedToMobileNetwork(Password.this)){
                 FirebaseInstanceId.getInstance().getInstanceId()
@@ -99,7 +99,7 @@ public class Password extends AppCompatActivity {
                                 String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                                         Settings.Secure.ANDROID_ID);
                                 String token = task.getResult().getToken();
-                                callApi(android_id,token,email,password,dialog);
+                                callApi(android_id,token,email,pass,dialog);
                             }
                         });
 
@@ -136,9 +136,13 @@ mBackbtn.setOnClickListener(new View.OnClickListener() {
                         Bundle bundle=new Bundle();
                         bundle.putSerializable("responce",response.body());
                         intent.putExtras(bundle);
+
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
+
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        Log.e("response",response.body().toString());
                         Toast.makeText(Password.this, "Successfully login", Toast.LENGTH_SHORT).show();
                         finish();
                     }else{

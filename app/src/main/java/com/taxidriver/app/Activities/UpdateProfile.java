@@ -169,7 +169,9 @@ public class UpdateProfile extends AppCompatActivity {
                 l_name.setText(data.getLastName());
                 phone.setText(data.getMobile());
                 email.setText(data.getEmail());
-                service.setText(data.getService().getServiceType().getName());
+//                service.setText(data.getService().getServiceType().getName());
+                service.setText("null");
+
                 }
             }
 

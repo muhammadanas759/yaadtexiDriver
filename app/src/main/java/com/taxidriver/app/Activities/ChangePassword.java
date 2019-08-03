@@ -54,6 +54,9 @@ public class ChangePassword extends AppCompatActivity {
                            againPass.setText("");
                            oldPass.setText("");
                             }
+                            else{
+                                Toast.makeText(ChangePassword.this, "not", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         @Override

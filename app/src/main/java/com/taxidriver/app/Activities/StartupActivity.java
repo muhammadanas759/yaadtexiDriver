@@ -34,10 +34,13 @@ public class StartupActivity extends AppCompatActivity {
         Object data= LocalPersistence.readObjectFromFile(StartupActivity.this);
         if(data==null){
             startActivity(new Intent(StartupActivity.this, Signin.class));
+            finish();
+
         }else{
             Intent intent=new Intent(StartupActivity.this, Intermediate.class);
             intent.putExtra("responce",(User)data);
             startActivity(intent);
+            finish();
         }
     }
 }

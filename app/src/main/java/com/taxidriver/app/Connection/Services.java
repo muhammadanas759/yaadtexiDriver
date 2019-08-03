@@ -29,16 +29,18 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface Services {
-@POST("api/provider/yaad/signup")
-    Call<SignUpResponse> signup(@Query("device_type")  String device_type,
-                                @Query("device_token")  String device_token,
+@POST("api/provider/yaad/register")
+    Call<SignUpResponse> signup(
                                 @Query("device_id")  String device_id,
-                                @Query("login_by")  String login_by,
+                                @Query("device_type")  String device_type,
+                                @Query("device_token")  String device_token,
                                 @Query("first_name")  String first_name,
                                 @Query("last_name")  String last_name,
                                 @Query("email")  String email,
                                 @Query("mobile")  String mobile,
-                                @Query("password")  String password);
+                                @Query("password")  String password,
+                                @Query("password_confirmation")  String password_confirmation
+                                );
     @POST("api/provider/yaad/login")
     Call<User> Login(@Query("device_id")  String device_id,
                      @Query("device_type")  String device_type,
@@ -50,7 +52,7 @@ public interface Services {
     Call<LogoutResponse> Logout(@Header("Authorization") String token);
 
 
- @POST("api/provider/yaad/summary")
+ @GET("api/provider/yaad/summary")
     Call<SummaryResponse> Summary(@Header("Authorization") String token);
 
 
@@ -151,7 +153,7 @@ Call<UpdateProfileResponse> getProfile(@Header("Authorization") String token
     Call<PasswordResponse> UpdatePassword(@Header("Authorization") String token,
                                           @Query("password") String password,
                                           @Query("password_confirmation") String password_confirmation,
-                                          @Query("old_password") String old_password);
+                                          @Query("password_old") String password_old);
 
 //    @POST("api/provider/yaad/update/location")
 //    Call<UpdateLocation> UpdateLocation(@Header("Authorization") String token,
