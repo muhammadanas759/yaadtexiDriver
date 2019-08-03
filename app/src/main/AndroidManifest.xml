@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.taxidriver.app">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.location.gps" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Activities.Summary"></activity>
+        <activity android:name=".Activities.StartupActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activities.help" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".Activities.Coupon" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <uses-library
+            android:name="com.google.android.maps"
+            android:required="true" /> <!-- The API key for Google Maps-based APIs. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAGxlkR-d31zeC7wEDOcCCm_Du7y0xk0UM" />
+
+        <activity
+            android:name=".Map.DashBoard"
+            android:label="@string/title_activity_dash_board"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Ride.PickLocation"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Map.DropMapLocation"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Activities.Otp" />
+        <activity android:name=".Activities.PhoneNumber" />
+        <activity
+            android:name=".SignUp"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Email"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".Signin">
+
+        </activity>
+        <activity
+            android:name=".Password"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".Map.Intermediate" />
+        <activity android:name=".Activities.Trips" />
+        <activity android:name=".Activities.UpdateProfile" />
+        <activity android:name=".Activities.ChangePassword" />
+    </application>
+
+</manifest>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.UpcomingTripFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/card_list2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp" />
+
+    <RelativeLayout
+        android:id="@+id/main_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:scaleX=".8"
+            android:scaleY=".8"
+            android:src="@drawable/noview" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/icon"
+            android:layout_marginTop="@dimen/sides"
+            android:gravity="center"
+            android:text="@string/no_trip_upcomming_past"
+            android:textColor="@color/back"
+            android:textSize="@dimen/sides" />
+    </RelativeLayout>
+
+</FrameLayout>

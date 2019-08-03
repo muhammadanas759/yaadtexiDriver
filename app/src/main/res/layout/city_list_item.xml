@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:layout_marginTop="10dp"
+    android:orientation="vertical"
+
+    >
+
+    <TextView
+        android:id="@+id/list_item_textView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:fontFamily="sans-serif"
+        android:textColor="#000"
+        android:textSize="16sp"
+
+        tools:text="Company Name" />
+
+    <TextView
+        android:id="@+id/list_state_textView"
+        android:layout_width="fill_parent"
+        android:layout_height="18sp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/transp"
+        android:textSize="14sp"
+        tools:text="Company Name" />
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="fill_parent"
+        android:layout_height="18sp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/transp"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:text="Company Name" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+
+        android:background="@color/transp" />
+</LinearLayout>

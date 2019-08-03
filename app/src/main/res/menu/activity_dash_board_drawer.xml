@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/mytrips"
+            android:title="@string/payment"
+            />
+        <item
+            android:id="@+id/myearning"
+            android:title="@string/myearning" />
+        <item
+            android:id="@+id/summary"
+            android:title="@string/summary" />
+        <item
+            android:id="@+id/help"
+            android:title="@string/help" />
+        <item
+            android:id="@+id/share"
+            android:title="@string/share" />
+        <item
+            android:id="@+id/logout"
+            android:title="@string/logout" />
+    </group>
+
+
+</menu>

@@ -1,0 +1,43 @@
+<resources>
+
+
+    <style name="foodRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/food_ratingbar_full_filled</item>
+        <item name="android:minHeight">23dip</item>
+        <item name="android:maxHeight">25dip</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/back</item>
+        <item name="colorPrimaryDark">@color/back</item>
+        <item name="colorAccent">@color/back</item>
+        <item name="android:textColorHint">@color/back</item>
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
+        <item name="fontFamily">@font/raleway_medium</item>
+
+    </style>
+    <style name="EditTextHint" parent="TextAppearance.AppCompat">
+        <item name="colorAccent">@android:color/black</item>
+        <item name="android:textColorHint">@color/back</item>
+        <item name="colorControlNormal">@color/back</item>
+        <item name="colorControlActivated">@color/back</item>
+        <item name="colorControlHighlight">@color/back</item>
+    </style>
+
+    <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/black</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+
+</resources>
