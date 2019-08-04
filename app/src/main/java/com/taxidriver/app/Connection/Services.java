@@ -9,6 +9,7 @@ import com.taxidriver.app.ApiResponse.PasswordResponse.PasswordResponse;
 import com.taxidriver.app.ApiResponse.SignupResponse.SignUpResponse;
 import com.taxidriver.app.ApiResponse.Status.StatusResponse;
 import com.taxidriver.app.ApiResponse.Summary.SummaryResponse;
+import com.taxidriver.app.ApiResponse.Target.TargetResponse;
 import com.taxidriver.app.ApiResponse.UpdateProfile.UpdateProfileResponse;
 import com.taxidriver.app.ApiResponse.login.User;
 
@@ -56,6 +57,10 @@ public interface Services {
     Call<SummaryResponse> Summary(@Header("Authorization") String token);
 
 
+ @GET("api/provider/yaad/target")
+    Call<TargetResponse> Target(@Header("Authorization") String token);
+
+
 
     @GET("api/provider/yaad/help")
     Call<HelpResponse> Help(@Header("Authorization") String token);
@@ -79,6 +84,8 @@ public interface Services {
     @POST("api/provider/yaad/available")
     Call<StatusResponse> StatusUpdate(@Header("Authorization") String token,
                                       @Query("service_status")  String service_status );
+
+
 
     //
 

@@ -198,7 +198,7 @@ public class DashBoard extends AppCompatActivity
             mEditor.commit();
            status("active");
         });
-        timer = new CountDownTimer(4 * 1000, 1000) {
+        timer = new CountDownTimer(9 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 changeMarker();

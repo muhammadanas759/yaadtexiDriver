@@ -23,8 +23,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.Target"></activity>
-        <activity android:name=".Activities.Summary" />
+        <activity android:name=".Activities.Target"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"></activity>
+
+        <activity android:name=".Activities.Summary"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            />
         <activity android:name=".Activities.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

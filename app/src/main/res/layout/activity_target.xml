@@ -13,17 +13,29 @@
         android:layout_weight="0.5"
         android:orientation="vertical"
         >
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.7"
             android:layout_marginTop="10dp"
-            android:layout_gravity="center_horizontal"
+
             >
             <TextView
+                android:id="@+id/targetcompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tr"
+            android:layout_centerHorizontal="true"
+            android:text="0"
+                android:textColor="@color/blue"
+            android:layout_marginTop="10dp"
+            android:textSize="25dp"
+            />
+            <TextView
+                android:id="@+id/tr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:text="TARGET COMPLETED"
                 android:textSize="10dp"
                 />
@@ -31,7 +43,7 @@
                 android:id="@+id/ProgressBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:indeterminate="false"
                 android:progressDrawable="@drawable/progressbar"
                 android:background="@drawable/circleshape"
@@ -39,7 +51,7 @@
                 android:max="100"
                 android:progress="25" />
 
-        </FrameLayout>
+        </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

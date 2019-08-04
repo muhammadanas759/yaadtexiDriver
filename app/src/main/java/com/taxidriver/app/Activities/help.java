@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 
@@ -29,7 +30,7 @@ public class help extends AppCompatActivity {
 
     private ImageView mPhone, mEmail, mExplore;
     private ProgressDialog dialog;
-
+ImageView back;
     private String phone, email, explore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,12 @@ public class help extends AppCompatActivity {
         dialog.setMessage("Loading...");
         dialog.show();
         init();
-
+back.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        finish();
+    }
+});
         apiCall();
     }
 
@@ -86,7 +92,7 @@ public class help extends AppCompatActivity {
 
         mPhone = findViewById(R.id.phone);
         mEmail = findViewById(R.id.email);
-
+back=findViewById(R.id.backhelp);
         mExplore = findViewById(R.id.explore);
 
 

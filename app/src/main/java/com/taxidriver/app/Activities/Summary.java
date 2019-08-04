@@ -3,6 +3,7 @@ package com.taxidriver.app.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,9 @@ User data;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
+        getSupportActionBar().setTitle("My Summary");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         init();
         mApi= Utils.getApiService2();
         data = (User) LocalPersistence.readObjectFromFile(Summary.this);
@@ -68,7 +72,16 @@ cancelcount.setText(response.body().getCancelRides().toString());
     schdulecount=findViewById(R.id.totalschdulerides);
     cancelcount=findViewById(R.id.totalcancelledrides);
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     @Override
     public void onClick(View v) {
 switch (v.getId()){
