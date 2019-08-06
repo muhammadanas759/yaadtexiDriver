@@ -65,6 +65,7 @@ import com.squareup.picasso.Picasso;
 import com.taxidriver.app.Activities.Coupon;
 import com.taxidriver.app.Activities.Summary;
 import com.taxidriver.app.Activities.Target;
+import com.taxidriver.app.Activities.Trips;
 import com.taxidriver.app.Activities.UpdateProfile;
 import com.taxidriver.app.Activities.help;
 import com.taxidriver.app.Adapter.TaxiSlection;
@@ -1379,9 +1380,9 @@ public class DashBoard extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.mytrips) {
-            // Handle the camera action
-        } else if (id == R.id.myearning) {
+         if (id == R.id.mytrips) {
+            startActivity(new Intent(DashBoard.this, Trips.class)); }
+         else if (id == R.id.myearning) {
             startActivity(new Intent(DashBoard.this, Target.class));
         } else if (id == R.id.summary) {
             startActivity(new Intent(DashBoard.this, Summary.class));

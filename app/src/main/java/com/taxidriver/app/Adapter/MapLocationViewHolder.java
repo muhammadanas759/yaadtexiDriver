@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,7 +41,7 @@ import com.taxidriver.app.R;
 public class MapLocationViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback {
     public TextView date;
     public TextView id;
-
+    public CardView cardView;
     public TextView price;
     public MapView mapView;
     protected GoogleMap mGoogleMap;
@@ -52,7 +53,7 @@ public class MapLocationViewHolder extends RecyclerView.ViewHolder implements On
         super(view);
 
         mContext = context;
-
+        cardView=view.findViewById(R.id.card_view);
         date = (TextView) view.findViewById(R.id.date);
         price = (TextView) view.findViewById(R.id.price);
 
@@ -60,6 +61,7 @@ public class MapLocationViewHolder extends RecyclerView.ViewHolder implements On
         mapView = (MapView) view.findViewById(R.id.map);
 
         mapView.onCreate(null);
+        mapView.setClickable(false);
         mapView.getMapAsync(this);
     }
 
@@ -69,6 +71,8 @@ public class MapLocationViewHolder extends RecyclerView.ViewHolder implements On
         Log.e("where", "setMapLocation");
         // If the map is ready, update its content.
         if (mGoogleMap != null) {
+
+            mGoogleMap.setOnMapClickListener(null);
             updateMapContents();
         }
     }
@@ -99,18 +103,17 @@ public class MapLocationViewHolder extends RecyclerView.ViewHolder implements On
         CameraPosition.Builder builder = new CameraPosition.Builder();
         builder.zoom(16);
         builder.target(from);
-        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
 //         Creating a marker
         MarkerOptions markerOptions = new MarkerOptions();
 
-        // Setting the position for the marker
-        markerOptions.position(from);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.user_marker));
-        markerOptions = new MarkerOptions();
-
-        // Setting the position for the marker
-        markerOptions.position(from);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.provider_marker));
-        mGoogleMap.addMarker(markerOptions);
+//        // Setting the position for the marker
+//        markerOptions.position(from);
+//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.user_marker));
+//        markerOptions = new MarkerOptions();
+//
+//        // Setting the position for the marker
+//        markerOptions.position(from);
+//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.provider_marker));
+//        mGoogleMap.addMarker(markerOptions);
     }
 }

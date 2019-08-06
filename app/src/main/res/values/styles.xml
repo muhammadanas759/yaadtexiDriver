@@ -6,6 +6,18 @@
         <item name="android:minHeight">23dip</item>
         <item name="android:maxHeight">25dip</item>
     </style>
+
+
+    <style name="theme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/back</item>
+        <item name="colorPrimaryDark">@color/back</item>
+        <item name="colorAccent">@color/back</item>
+        <item name="android:textColorHint">@color/back</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
+        <item name="fontFamily">@font/raleway_medium</item>
+
+    </style>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->

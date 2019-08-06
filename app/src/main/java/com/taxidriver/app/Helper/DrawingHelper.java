@@ -188,12 +188,14 @@ public class DrawingHelper {
             }
 
 // Drawing polyline in the Google Map for the i-th route
-            mGoogleMap.addPolyline(lineOptions);
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            builder.include(from);
-            builder.include(destination);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100));
-
+//            polyline in the Google Map for the i-th route
+            if (lineOptions!=null) {
+                mGoogleMap.addPolyline(lineOptions);
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(from);
+                builder.include(destination);
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 20));
+            }
             // Setting the position for the marker
             markerOptions.position(from);
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.user_marker));

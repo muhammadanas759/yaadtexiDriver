@@ -23,12 +23,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.Target"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"></activity>
-
-        <activity android:name=".Activities.Summary"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
-            />
+        <activity android:name=".Activities.DisplayProfile" android:theme="@style/theme">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".Activities.TripDetails" />
+        </activity>
+        <activity
+            android:name=".Activities.Target"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+        <activity
+            android:name=".Activities.Summary"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
         <activity android:name=".Activities.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,15 +76,28 @@
         <activity
             android:name=".Email"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".Signin"></activity>
+        <activity android:name=".Signin" />
         <activity
             android:name=".Password"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".Map.Intermediate" />
-        <activity android:name=".Activities.Trips" />
+        <activity
+            android:name=".Activities.Trips"
+            android:theme="@style/theme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Map.DashBoard" />
+        </activity>
         <activity android:name=".Activities.UpdateProfile" />
         <activity android:name=".Activities.ChangePassword" />
+        <activity
+            android:name=".Activities.TripDetails"
+            android:theme="@style/theme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.Trips" />
+        </activity>
     </application>
 
 </manifest>
