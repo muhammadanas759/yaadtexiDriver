@@ -59,16 +59,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Phone Number"
-            android:textSize="20dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/updatenumber"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:background="@null"
+            android:textColor="@color/graydark"
+
             android:inputType="number"
             android:text="0335"
-            android:textSize="20dp" />
+            android:textSize="18sp" />
     </LinearLayout>
     <View
         android:layout_width="match_parent"
@@ -96,8 +98,10 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:background="@null"
+            android:textColor="@color/graydark"
+
             android:text="anas@gmail.com"
-            android:textSize="20dp" />
+            android:textSize="18sp" />
     </LinearLayout>
     <View
         android:layout_width="match_parent"

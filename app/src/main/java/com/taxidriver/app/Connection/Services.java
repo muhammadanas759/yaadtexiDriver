@@ -1,6 +1,7 @@
 package com.taxidriver.app.Connection;
 
 
+import com.taxidriver.app.ApiResponse.CancelTrip.CancelTripResponse;
 import com.taxidriver.app.ApiResponse.HelpResponse.HelpResponse;
 import com.taxidriver.app.ApiResponse.Logout.LogoutResponse;
 import com.taxidriver.app.ApiResponse.PasswordResponse.PasswordResponse;
@@ -10,6 +11,8 @@ import com.taxidriver.app.ApiResponse.Status.StatusResponse;
 import com.taxidriver.app.ApiResponse.Summary.SummaryResponse;
 import com.taxidriver.app.ApiResponse.Target.TargetResponse;
 import com.taxidriver.app.ApiResponse.TripHistory.TripHistoryResponse;
+import com.taxidriver.app.ApiResponse.UpcomingDetailResponse.UpcomingDetailResponse;
+import com.taxidriver.app.ApiResponse.UpcomingTripResponse.UpcomingResponse;
 import com.taxidriver.app.ApiResponse.UpdateProfile.UpdateProfileResponse;
 import com.taxidriver.app.ApiResponse.login.User;
 
@@ -168,10 +171,19 @@ public interface Services {
 
     @GET("api/provider/yaad/request/history")
     Call<List<PastTripDetailResponse>> TripDetail(@Header("Authorization") String token,
-                                                  @Query("request_id") String request_id);
+                                                  @Query("request_id") Integer request_id);
 
-//    @GET("api/provider/yaad/upcoming/trips")
-//    Call<List<UpcomingResponse>> Upcoming(@Header("Authorization") String token);
+    @GET("api/provider/yaad/request/upcoming/details")
+    Call<List<UpcomingDetailResponse>> UpcomingTripDetail(@Header("Authorization") String token,
+                                                          @Query("request_id") Integer request_id);
+
+    @GET("api/provider/yaad/request/upcoming/details")
+    Call<List<CancelTripResponse>> CancelTrip(@Header("Authorization") String token,
+                                              @Query("id") Integer request_id);
+
+
+    @GET("api/provider/yaad/request/upcoming")
+    Call<List<UpcomingResponse>> Upcoming(@Header("Authorization") String token);
 //    @GET("api/provider/yaad/add/money")
 //    Call<WalletproviderResponse> AddMoney(@Header("Authorization") String token,
 //                                      @Query("amount") String amount,

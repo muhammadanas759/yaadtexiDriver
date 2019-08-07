@@ -4,6 +4,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:orientation="vertical">
 
@@ -104,6 +105,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
+                        android:text="02:25 AM"
                         android:textColor="@color/black"
 
                         android:textSize="14sp" />
@@ -139,6 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="YaadTaxi486372"
+                android:textColor="@color/graydark"
                 android:textSize="18sp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"/>
@@ -192,20 +195,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="CASH"
+
                     android:textSize="18sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/graydark"
+
                     android:layout_marginLeft="15dp"/>
 
-
-                <TextView
-                    android:id="@+id/cash"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="$0"
-                    android:textSize="18sp"
-                    android:gravity="right"
-                    android:textColor="@color/black"
-                    android:layout_marginLeft="15dp"/>
 
             </LinearLayout>
         </LinearLayout>
@@ -217,29 +212,34 @@
             android:background="@color/graydark" />
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:orientation="vertical">
 
-            <TextView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Comments"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:layout_height="56dp"
+                android:layout_margin="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="275dp"
+                app:cardCornerRadius="10dp"
+                android:elevation="@dimen/sides">
 
 
-            <TextView
-                android:id="@+id/comments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No comments available"
-                android:textColor="@color/black"
-                android:layout_marginTop="5dp"
-                android:textSize="18sp" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/cancel_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/cancel_ride"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:background="@drawable/round_cancel_button"
+                    />
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
     </LinearLayout>
 </ScrollView>

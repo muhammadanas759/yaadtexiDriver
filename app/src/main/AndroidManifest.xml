@@ -23,10 +23,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.DisplayProfile" android:theme="@style/theme">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".Activities.TripDetails" />
+        <activity android:name=".Activities.UpcomingTripDetail"  android:theme="@style/theme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.Trips" />
+        </activity>
+        <activity
+            android:name=".Activities.DisplayProfile"
+            android:theme="@style/theme">
+
         </activity>
         <activity
             android:name=".Activities.Target"
