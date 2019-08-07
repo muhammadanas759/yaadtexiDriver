@@ -3,7 +3,9 @@ package com.taxidriver.app.ApiResponse.ForgotPassword;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ForgotResponse{
+import java.io.Serializable;
+
+public class ForgotResponse implements Serializable {
     @SerializedName("message")
     @Expose
     private String message;

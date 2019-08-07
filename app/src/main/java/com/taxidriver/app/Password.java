@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.taxidriver.app.Activities.ForgotPass;
 import com.taxidriver.app.Activities.PhoneNumber;
 
 import com.taxidriver.app.ApiResponse.login.User;
@@ -67,6 +68,12 @@ public static String pass;
                 Password.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 Password.this.finish();
 
+            }
+        });
+        mForgotPasssword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Password.this, ForgotPass.class));
             }
         });
         mNextbtn.setOnClickListener(new View.OnClickListener() {

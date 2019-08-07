@@ -23,6 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".Activities.UpcomingTripDetail"  android:theme="@style/theme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -32,6 +33,16 @@
             android:name=".Activities.DisplayProfile"
             android:theme="@style/theme">
 
+=======
+        <activity android:name=".Activities.ResetPass"></activity>
+        <activity android:name=".Activities.ForgotPass" />
+        <activity
+            android:name=".Activities.DisplayProfile"
+            android:theme="@style/theme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.TripDetails" />
+>>>>>>> fc83f030dfadd21dd01e8d4517986f383f9f1e85
         </activity>
         <activity
             android:name=".Activities.Target"
