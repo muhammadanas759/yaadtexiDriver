@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -37,8 +38,10 @@ User data;
         getSupportActionBar().setTitle("My Earning");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
-
-        String token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIwMywiaXNzIjoiaHR0cDovL3lhYWR0YXhpLmNvbS9hcGkvcHJvdmlkZXIveWFhZC9sb2dpbiIsImlhdCI6MTU2NDg2MjQwOSwiZXhwIjoxNTY1MjIyNDA5LCJuYmYiOjE1NjQ4NjI0MDksImp0aSI6IlJlZEJlTlZyVm10NUVvS1MifQ.JPg-6BOYk8bg1A0lNCTDh87Lpib1fgdpFsyApHL34tI";
+        data = (User) LocalPersistence.readObjectFromFile(Target.this);
+        String token=data.getAccessToken();
+        Log.e("bearer token", "onCreate:bearer token "+data.getAccessToken());
+//        String token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIwMywiaXNzIjoiaHR0cDovL3lhYWR0YXhpLmNvbS9hcGkvcHJvdmlkZXIveWFhZC9sb2dpbiIsImlhdCI6MTU2NDg2MjQwOSwiZXhwIjoxNTY1MjIyNDA5LCJuYmYiOjE1NjQ4NjI0MDksImp0aSI6IlJlZEJlTlZyVm10NUVvS1MifQ.JPg-6BOYk8bg1A0lNCTDh87Lpib1fgdpFsyApHL34tI";
         api.Target("Bearer " + token).enqueue(new Callback<TargetResponse>() {
             @Override
             public void onResponse(Call<TargetResponse> call, Response<TargetResponse> response) {
