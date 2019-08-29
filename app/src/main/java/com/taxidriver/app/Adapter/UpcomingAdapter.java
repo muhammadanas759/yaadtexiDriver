@@ -97,9 +97,9 @@ public class UpcomingAdapter  extends RecyclerView.Adapter<UpcomingMapLocationHo
 
                     dialog.dismiss();
                     Utils.getApiService().CancelTrip("Bearer "+Token,
-                            ids).enqueue(new Callback<List<CancelTripResponse>>() {
+                            String.valueOf(ids)).enqueue(new Callback<CancelTripResponse>() {
                         @Override
-                        public void onResponse(Call<List<CancelTripResponse>> call, Response<List<CancelTripResponse>> response) {
+                        public void onResponse(Call<CancelTripResponse> call, Response<CancelTripResponse> response) {
                             if (response.isSuccessful()){
                                 if (response.body()!=null){
                                     mMapLocations.remove(position);
@@ -112,7 +112,7 @@ public class UpcomingAdapter  extends RecyclerView.Adapter<UpcomingMapLocationHo
                         }
 
                         @Override
-                        public void onFailure(Call<List<CancelTripResponse>> call, Throwable t) {
+                        public void onFailure(Call<CancelTripResponse> call, Throwable t) {
 
                         }
                     });

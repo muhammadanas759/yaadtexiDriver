@@ -12,11 +12,12 @@ import android.widget.Toast;
 
 import com.taxidriver.app.ApiResponse.ForgotPassword.ForgotResponse;
 import com.taxidriver.app.ApiResponse.ResetResponse.ResetResponse;
-import com.taxidriver.app.ApiResponse.login.User;
 import com.taxidriver.app.Connection.Services;
 import com.taxidriver.app.Connection.Utils;
+import com.taxidriver.app.Model.User;
 import com.taxidriver.app.R;
 import com.taxidriver.app.Signin;
+import com.taxidriver.app.Utils.LocalPersistence;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,7 +48,14 @@ Services mApi;
     }
 
     private void callApi(ForgotResponse user) {
-        mApi.ResetPassword(user.getProvider().getMobile(),pass.getText().toString(),newpass.getText().toString(),user.getProvider().getOtp().toString()).enqueue(new Callback<ResetResponse>() {
+        String Token=((User) LocalPersistence.readObjectFromFile(getApplicationContext())).getAccessToken();
+
+        mApi.ResetPassword(
+                Token,
+                user.getProvider().getMobile(),
+                pass.getText().toString(),
+                newpass.getText().toString(),
+                user.getProvider().getOtp().toString()).enqueue(new Callback<ResetResponse>() {
             @Override
             public void onResponse(Call<ResetResponse> call, Response<ResetResponse> response) {
                 if(response.isSuccessful()){

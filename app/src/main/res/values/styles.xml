@@ -25,6 +25,7 @@
         <item name="colorPrimary">@color/back</item>
         <item name="colorPrimaryDark">@color/back</item>
         <item name="colorAccent">@color/back</item>
+
         <item name="android:textColorHint">@color/back</item>
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
         <item name="fontFamily">@font/raleway_medium</item>

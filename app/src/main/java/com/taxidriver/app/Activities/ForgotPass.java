@@ -11,11 +11,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.taxidriver.app.ApiResponse.ForgotPassword.ForgotResponse;
-import com.taxidriver.app.ApiResponse.login.User;
 import com.taxidriver.app.Connection.Services;
 import com.taxidriver.app.Connection.Utils;
+import com.taxidriver.app.Model.User;
 import com.taxidriver.app.Password;
 import com.taxidriver.app.R;
+import com.taxidriver.app.Utils.LocalPersistence;
 
 import java.util.regex.Pattern;
 
@@ -57,8 +58,9 @@ Services mApi;
     }
 
     private void callApi(String number) {
+        String Token=((User) LocalPersistence.readObjectFromFile(getApplicationContext())).getAccessToken();
 
-    mApi.ForgetPassword(number).enqueue(new Callback<ForgotResponse>() {
+    mApi.ForgetPassword(Token,number).enqueue(new Callback<ForgotResponse>() {
         @Override
         public void onResponse(Call<ForgotResponse> call, Response<ForgotResponse> response) {
 if(response.isSuccessful()){

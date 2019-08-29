@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
@@ -34,7 +33,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -62,14 +60,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
-import com.taxidriver.app.Activities.Coupon;
 import com.taxidriver.app.Activities.Summary;
 import com.taxidriver.app.Activities.Target;
 import com.taxidriver.app.Activities.Trips;
 import com.taxidriver.app.Activities.UpdateProfile;
 import com.taxidriver.app.Activities.help;
 import com.taxidriver.app.Adapter.TaxiSlection;
-
+import com.taxidriver.app.ApiResponse.AcceptRideRequest.AcceptRideResponse;
+import com.taxidriver.app.ApiResponse.CancelTrip.CancelTripResponse;
 import com.taxidriver.app.ApiResponse.Logout.LogoutResponse;
 import com.taxidriver.app.ApiResponse.Status.StatusResponse;
 import com.taxidriver.app.Connection.Services;
@@ -79,7 +77,6 @@ import com.taxidriver.app.Model.Place;
 import com.taxidriver.app.Model.Taxi;
 import com.taxidriver.app.Model.User;
 import com.taxidriver.app.R;
-import com.taxidriver.app.Ride.PickLocation;
 import com.taxidriver.app.Signin;
 import com.taxidriver.app.Utils.LocalPersistence;
 import com.taxidriver.app.Utils.NetworkUtil;
@@ -90,7 +87,6 @@ import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -100,7 +96,7 @@ import static android.location.LocationManager.GPS_PROVIDER;
 
 public class DashBoard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
-    private String TAG="DashBoard";
+    private String TAG = "DashBoard";
 
     private SupportMapFragment mMap;
     private GoogleMap map;
@@ -150,10 +146,10 @@ public class DashBoard extends AppCompatActivity
         super.onCreate(savedInstanceState);
         this.savedInstanceState = savedInstanceState;
         setContentView(R.layout.activity_dash_board);
-        mSharedPreferences=getApplicationContext().getSharedPreferences("MyPref", 0);
-        mEditor=mSharedPreferences.edit();
+        mSharedPreferences = getApplicationContext().getSharedPreferences("MyPref", 0);
+        mEditor = mSharedPreferences.edit();
         statusCheck();
-        mApi= Utils.getApiService();
+        mApi = Utils.getApiService();
         mMap = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         drawer = findViewById(R.id.drawer_layout);
@@ -161,11 +157,11 @@ public class DashBoard extends AppCompatActivity
         View v = navigationView.getHeaderView(0);
         profileImage = v.findViewById(R.id.profileimageView);
         nameView = v.findViewById(R.id.name);
-        user=((User) LocalPersistence.readObjectFromFile(DashBoard.this));
-        nameView.setText(user.getmFirstName()+ " " +user.getmLastName());
+        user = ((User) LocalPersistence.readObjectFromFile(DashBoard.this));
+        nameView.setText(user.getmFirstName() + " " + user.getmLastName());
 
         Picasso.get()
-                .load("http://yaadtaxi.com/userprofilepics/" +user.getmUserAvatart())
+                .load("http://yaadtaxi.com/userprofilepics/" + user.getmUserAvatart())
                 .placeholder(R.drawable.ic_dummy_user)
                 .into(profileImage);
         profileImage.setOnClickListener(new View.OnClickListener() {
@@ -177,10 +173,9 @@ public class DashBoard extends AppCompatActivity
         });
 
 
-        offlineView=findViewById(R.id.offline);
-        mGoOffline=findViewById(R.id.go_offline);
-        mGoOnline=findViewById(R.id.go_online);
-
+        offlineView = findViewById(R.id.offline);
+        mGoOffline = findViewById(R.id.go_offline);
+        mGoOnline = findViewById(R.id.go_online);
 
 
         mGoOffline.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +183,7 @@ public class DashBoard extends AppCompatActivity
             public void onClick(View v) {
                 mEditor.putBoolean("offline", true);
                 mEditor.commit();
-               status("offline");
+                status("offline");
 
             }
         });
@@ -197,7 +192,7 @@ public class DashBoard extends AppCompatActivity
         mGoOnline.setOnClickListener(v1 -> {
             mEditor.putBoolean("offline", false);
             mEditor.commit();
-           status("active");
+            status("active");
         });
         timer = new CountDownTimer(9 * 1000, 1000) {
             @Override
@@ -213,6 +208,9 @@ public class DashBoard extends AppCompatActivity
 
         //to get the state of the screen wheter a pin selection screen or main screen
         if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().getBoolean("request")) {
+                drawAcceptAndReject();
+            }
             if (getIntent().getExtras().getBoolean("pick")) {
                 screenMain = false;
                 mMap.onCreate(savedInstanceState);
@@ -242,17 +240,114 @@ public class DashBoard extends AppCompatActivity
                 timer.start();
 
         }
-        if(mSharedPreferences.getBoolean("offline",true)){
+        if (mSharedPreferences.getBoolean("offline", true)) {
 
             status("offline");
 
-        }
-        else{
+        } else {
             status("active");
 
         }
 
 
+    }
+
+    private View mAcceptAndReject;
+
+    private void drawAcceptAndReject() {
+
+
+        mAcceptAndReject = findViewById(R.id.accept);
+
+        findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
+        mAcceptAndReject.setVisibility(View.VISIBLE);
+
+
+        TextView mAccept = mAcceptAndReject.findViewById(R.id.accept);
+        TextView mCancel = mAcceptAndReject.findViewById(R.id.cancel);
+
+
+        String id = "";
+        mAccept.setOnClickListener(v -> {
+            acceptRequest(id);
+
+        });
+
+
+        mCancel.setOnClickListener(v -> {
+            CancelRequest(id);
+
+        });
+
+
+    }
+
+    private void CancelRequest(String id) {
+        String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
+
+
+        mApi.CancelTrip("Bearer " + Token,
+                id).enqueue(new Callback<CancelTripResponse>() {
+            @Override
+            public void onResponse(Call<CancelTripResponse> call, Response<CancelTripResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        mAcceptAndReject.setVisibility(View.GONE);
+                        findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
+                        map.clear();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CancelTripResponse> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+    AcceptRideResponse ride;
+
+    private void acceptRequest(String id) {
+
+        String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
+
+
+        mApi.AcceptRideRequest("Bearer " + Token,
+                id).enqueue(new Callback<List<AcceptRideResponse>>() {
+            @Override
+            public void onResponse(Call<List<AcceptRideResponse>> call, Response<List<AcceptRideResponse>> response) {
+
+                if (response.isSuccessful()) {
+                    if (!response.body().isEmpty()) {
+                        List<AcceptRideResponse> rides = response.body();
+
+                        if (rides.contains(id)) {
+
+                            ride = rides.get(rides.indexOf(id));
+
+                            DrawingHelper helper = new DrawingHelper(map, getApplicationContext());
+                            String url = helper.getDirectionsUrl(new LatLng(mCurrentLocationLongitudeLatitutde.getLatitude(),
+                                            mCurrentLocationLongitudeLatitutde.getLongitude()),
+                                    new LatLng(ride.getDLatitude(), ride.getDLongitude()));
+                            helper.run(url);
+
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AcceptRideResponse>> call, Throwable t) {
+
+            }
+        });
+
+        map.setOnMapClickListener(null);
     }
 
     private void UpdateLocation() {
@@ -279,11 +374,10 @@ public class DashBoard extends AppCompatActivity
 
                     @Override
                     public void onFailure(Call<LogoutResponse> call, Throwable t) {
-                        Log.e(TAG, "onFailure: ",t );
+                        Log.e(TAG, "onFailure: ", t);
                     }
                 });
     }
-
 
 
     private void changeMarker() {
@@ -385,22 +479,22 @@ public class DashBoard extends AppCompatActivity
 
     private void status(String offline) {
 
-        String Token=((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
+        String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
 
-
-        mApi.StatusUpdate("Bearer "+Token,offline)
+        Log.e(TAG, "onResponse: ");
+        mApi.StatusUpdate("Bearer " + Token, offline)
                 .enqueue(new Callback<StatusResponse>() {
                     @Override
                     public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
-                        if (response.isSuccessful()){
-                            Log.e(TAG, "onResponse: "+response.body().getId()+"\n"+response.code() );
-                            Log.e(TAG, "onResponse: "+offline );
+                        if (response.isSuccessful()) {
+                            Log.e(TAG, "onResponse: " + response.body().getId() + "\n" + response.code());
+                            Log.e(TAG, "onResponse: " + offline);
 
-                            if(offline.equals("offline")){
+                            if (offline.equals("offline")) {
                                 offlineView.setVisibility(View.VISIBLE);
                                 mGoOffline.setVisibility(View.GONE);
                                 timer.cancel();
-                            }else{
+                            } else {
                                 offlineView.setVisibility(View.GONE);
                                 mGoOffline.setVisibility(View.VISIBLE);
                                 timer.start();
@@ -410,16 +504,13 @@ public class DashBoard extends AppCompatActivity
 
                     @Override
                     public void onFailure(Call<StatusResponse> call, Throwable t) {
-                        Log.e(TAG, "onFailure: ",t );
-                        Log.e(TAG+"1", "onFailure: "+t.getMessage() );
+                        Log.e(TAG, "onFailure: ", t);
+                        Log.e(TAG + "1", "onFailure: " + t.getMessage());
                     }
                 });
 
 
-
     }
-
-
 
 
     public void statusCheck() {
@@ -628,7 +719,7 @@ public class DashBoard extends AppCompatActivity
         RecyclerView recyclerView = findViewById(R.id.bottom_car_layout);
 
         ArrayList<Taxi> seats = new ArrayList<>();
-        ArrayList<Integer> cars= new ArrayList<>();
+        ArrayList<Integer> cars = new ArrayList<>();
         cars.add(R.drawable.car);
         cars.add(R.drawable.car);
         cars.add(R.drawable.car);
@@ -642,7 +733,7 @@ public class DashBoard extends AppCompatActivity
         seats.add(new Taxi("Seating 7-8"));
         seats.add(new Taxi("Seating 9-10"));
         seats.add(new Taxi("Seating 11-15"));
-        TaxiSlection adapter = new TaxiSlection(seats,cars, this);
+        TaxiSlection adapter = new TaxiSlection(seats, cars, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -722,7 +813,6 @@ public class DashBoard extends AppCompatActivity
     }
 
 
-
     private void getAddress(Place place) {
         Geocoder geocoder;
         List<android.location.Address> addresses = null;
@@ -780,7 +870,7 @@ public class DashBoard extends AppCompatActivity
         To.setLongitude(mCurrentLocationLongitudeLatitutde.getLongitude());
         To.setLatitude(mCurrentLocationLongitudeLatitutde.getLatitude());
 
-       com.taxidriver.app.Model.Address addresss = new com.taxidriver.app.Model.Address(address, city, state, country, postalCode, knownName);
+        com.taxidriver.app.Model.Address addresss = new com.taxidriver.app.Model.Address(address, city, state, country, postalCode, knownName);
         mToLocations = findViewById(R.id.to);
         mFromLocations = findViewById(R.id.from);
         mPickLocation = findViewById(R.id.to_from);
@@ -825,7 +915,7 @@ public class DashBoard extends AppCompatActivity
 
         mMap.getMapAsync(this);
 
-         drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         mCurrentLocation = findViewById(R.id.current_location);
@@ -838,7 +928,6 @@ public class DashBoard extends AppCompatActivity
             getcurrentLocation();
             mCurrentLocation.setVisibility(View.GONE);
         });
-
 
 
         findViewById(R.id.drawer).setOnClickListener(v ->
@@ -886,7 +975,6 @@ public class DashBoard extends AppCompatActivity
 //                mCurrentLocationLongitudeLatitutde = getcurrentLocation();
                 getcurrentLocation();
         } else {
-
 
 
         }
@@ -1153,6 +1241,7 @@ public class DashBoard extends AppCompatActivity
         });
         return null;
     }
+
     private void fromLocation() {
         map.clear();
 //
@@ -1253,9 +1342,9 @@ public class DashBoard extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        Log.e("mess","resume");
-        user=((User) LocalPersistence.readObjectFromFile(DashBoard.this));
-        nameView.setText(user.getmFirstName()+ " " +user.getmLastName());
+        Log.e("mess", "resume");
+        user = ((User) LocalPersistence.readObjectFromFile(DashBoard.this));
+        nameView.setText(user.getmFirstName() + " " + user.getmLastName());
         super.onResume();
         if (mMap != null) {
             if (getIntent().getExtras() != null) {
@@ -1267,7 +1356,7 @@ public class DashBoard extends AppCompatActivity
                     Log.e("error", "does not occurr");
                     From = getIntent().getExtras().getParcelable("location");
                     To = (Place) getIntent().getExtras().getSerializable("place");
-                    Log.e("mess","resume3");
+                    Log.e("mess", "resume3");
 
                 } else {
                     Log.e("error", "occurr");
@@ -1276,7 +1365,7 @@ public class DashBoard extends AppCompatActivity
                     mMap.onCreate(savedInstanceState);
                     visibility(screenMain);
                     setMainMapWithDrawer();
-                    Log.e("mess","resume2");
+                    Log.e("mess", "resume2");
                     getcurrentLocation();
 
                     if (mCurrentLocationLongitudeLatitutde != null)
@@ -1288,7 +1377,7 @@ public class DashBoard extends AppCompatActivity
                 mMap.onCreate(savedInstanceState);
                 visibility(screenMain);
                 setMainMapWithDrawer();
-                Log.e("mess","resume3");
+                Log.e("mess", "resume3");
                 getcurrentLocation();
 
                 if (mCurrentLocationLongitudeLatitutde != null)
@@ -1309,7 +1398,7 @@ public class DashBoard extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("mess","start");
+        Log.e("mess", "start");
     }
 
     @Override
@@ -1380,9 +1469,9 @@ public class DashBoard extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-         if (id == R.id.mytrips) {
-            startActivity(new Intent(DashBoard.this, Trips.class)); }
-         else if (id == R.id.myearning) {
+        if (id == R.id.mytrips) {
+            startActivity(new Intent(DashBoard.this, Trips.class));
+        } else if (id == R.id.myearning) {
             startActivity(new Intent(DashBoard.this, Target.class));
         } else if (id == R.id.summary) {
             startActivity(new Intent(DashBoard.this, Summary.class));
@@ -1400,22 +1489,23 @@ public class DashBoard extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     private void Logout() {
-        String Token=((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
+        String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
         LocalPersistence.deletefile(DashBoard.this);
-        if (NetworkUtil.isConnectedToInternet(getApplicationContext())){
-            ProgressDialog dialog=new ProgressDialog(DashBoard.this,R.style.AppCompatAlertDialogStyle);
+        if (NetworkUtil.isConnectedToInternet(getApplicationContext())) {
+            ProgressDialog dialog = new ProgressDialog(DashBoard.this, R.style.AppCompatAlertDialogStyle);
             dialog.setMessage("Logging Out");
             dialog.show();
-            mApi.Logout("Bearer "+Token).enqueue(new Callback<LogoutResponse>() {
+            mApi.Logout("Bearer " + Token).enqueue(new Callback<LogoutResponse>() {
                 @Override
                 public void onResponse(Call<LogoutResponse> call, retrofit2.Response<LogoutResponse> response) {
-                    if (response.isSuccessful()){
+                    if (response.isSuccessful()) {
                         dialog.dismiss();
-                        Log.e("logout", "onResponse: "+response.body().getMessage() );
+                        Log.e("logout", "onResponse: " + response.body().getMessage());
                         startActivity(new Intent(getApplicationContext(), Signin.class));
                         finish();
-                    }else{
+                    } else {
 
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), "An error Occurred", Toast.LENGTH_SHORT).show();
@@ -1430,8 +1520,8 @@ public class DashBoard extends AppCompatActivity
                 public void onFailure(Call<LogoutResponse> call, Throwable t) {
                     dialog.dismiss();
                 }
-            });}
-        else
+            });
+        } else
             NetworkUtil.showNoInternetAvailableErrorDialog(getApplicationContext());
 
 
@@ -1441,7 +1531,7 @@ public class DashBoard extends AppCompatActivity
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("YaadTaxi User App")
-                .setIcon(ContextCompat.getDrawable(this,R.drawable.yaadtaxi))
+                .setIcon(ContextCompat.getDrawable(this, R.drawable.yaadtaxi))
                 .setMessage("Are you sure want to logout")
                 .setCancelable(false)
                 .setPositiveButton("Yes", (dialog, id) -> {
@@ -1451,17 +1541,17 @@ public class DashBoard extends AppCompatActivity
                     timer.cancel();
 
                 })
-                .setNegativeButton("No",(dialog,id)->{
+                .setNegativeButton("No", (dialog, id) -> {
                     dialog.dismiss();
                 });
 
         final AlertDialog alert = builder.create();
         //2. now setup to change color of the button
-        alert.setOnShowListener( new DialogInterface.OnShowListener() {
+        alert.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface arg0) {
-                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(DashBoard.this,R.color.back));
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(DashBoard.this,R.color.back));
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(DashBoard.this, R.color.back));
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(DashBoard.this, R.color.back));
             }
         });
 
