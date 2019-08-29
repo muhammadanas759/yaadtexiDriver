@@ -23,6 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -40,6 +41,19 @@
             </intent-filter>
         </service>
         <activity android:name="com.facebook.accountkit.ui.AccountKitActivity"/>
+=======
+<<<<<<< HEAD
+        <activity android:name=".Activities.UpcomingTripDetail"  android:theme="@style/theme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.Trips" />
+        </activity>
+        <activity
+            android:name=".Activities.DisplayProfile"
+            android:theme="@style/theme">
+
+=======
+>>>>>>> origin/master
         <activity android:name=".Activities.ResetPass"></activity>
         <activity android:name=".Activities.ForgotPass" />
         <activity
@@ -48,6 +62,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.TripDetails" />
+>>>>>>> fc83f030dfadd21dd01e8d4517986f383f9f1e85
         </activity>
         <activity
             android:name=".Activities.Target"

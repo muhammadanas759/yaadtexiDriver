@@ -1,18 +1,18 @@
 package com.taxidriver.app.Connection;
 
 
-import com.taxidriver.app.Activities.ForgotPass;
-import com.taxidriver.app.ApiResponse.ForgotPassword.ForgotResponse;
+import com.taxidriver.app.ApiResponse.CancelTrip.CancelTripResponse;
 import com.taxidriver.app.ApiResponse.HelpResponse.HelpResponse;
 import com.taxidriver.app.ApiResponse.Logout.LogoutResponse;
 import com.taxidriver.app.ApiResponse.PasswordResponse.PasswordResponse;
 import com.taxidriver.app.ApiResponse.PastTripDetailResponse.PastTripDetailResponse;
-import com.taxidriver.app.ApiResponse.ResetResponse.ResetResponse;
 import com.taxidriver.app.ApiResponse.SignupResponse.SignUpResponse;
 import com.taxidriver.app.ApiResponse.Status.StatusResponse;
 import com.taxidriver.app.ApiResponse.Summary.SummaryResponse;
 import com.taxidriver.app.ApiResponse.Target.TargetResponse;
 import com.taxidriver.app.ApiResponse.TripHistory.TripHistoryResponse;
+import com.taxidriver.app.ApiResponse.UpcomingDetailResponse.UpcomingDetailResponse;
+import com.taxidriver.app.ApiResponse.UpcomingTripResponse.UpcomingResponse;
 import com.taxidriver.app.ApiResponse.UpdateProfile.UpdateProfileResponse;
 import com.taxidriver.app.ApiResponse.login.User;
 
@@ -65,13 +65,15 @@ public interface Services {
     Call<HelpResponse> Help(@Header("Authorization") String token);
 
     @POST("api/provider/yaad/forgot/password")
-    Call<ForgotResponse> ForgetPassword(@Query("mobile") String mobile);
+    Call<User> ForgetPassword(@Header("Authorization") String token,
+                              @Query("mobile") String mobile);
 
     @POST("api/provider/yaad/reset/password")
-    Call<ResetResponse> ResetPassword(@Query("mobile") String mobile,
-                                      @Query("password_confirmation") String password_confirmation,
-                                      @Query("password") String password,
-                                      @Query("otp") String otp);
+    Call<User> ResetPassword(@Header("Authorization") String token,
+                             @Query("mobile") String mobile,
+                             @Query("password_confirmation") String password_confirmation,
+                             @Query("password") String password,
+                             @Query("otp") String otp);
 
     @POST("api/provider/yaad/location")
     Call<LogoutResponse> UpdateLocation(@Header("Authorization") String token,
@@ -169,10 +171,19 @@ public interface Services {
 
     @GET("api/provider/yaad/request/history")
     Call<List<PastTripDetailResponse>> TripDetail(@Header("Authorization") String token,
-                                                  @Query("request_id") String request_id);
+                                                  @Query("request_id") Integer request_id);
 
-//    @GET("api/provider/yaad/upcoming/trips")
-//    Call<List<UpcomingResponse>> Upcoming(@Header("Authorization") String token);
+    @GET("api/provider/yaad/request/upcoming/details")
+    Call<List<UpcomingDetailResponse>> UpcomingTripDetail(@Header("Authorization") String token,
+                                                          @Query("request_id") Integer request_id);
+
+    @GET("api/provider/yaad/request/upcoming/details")
+    Call<List<CancelTripResponse>> CancelTrip(@Header("Authorization") String token,
+                                              @Query("id") Integer request_id);
+
+
+    @GET("api/provider/yaad/request/upcoming")
+    Call<List<UpcomingResponse>> Upcoming(@Header("Authorization") String token);
 //    @GET("api/provider/yaad/add/money")
 //    Call<WalletproviderResponse> AddMoney(@Header("Authorization") String token,
 //                                      @Query("amount") String amount,

@@ -1,23 +1,25 @@
 package com.taxidriver.app.Activities;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
+import com.taxidriver.app.ApiResponse.CancelTrip.CancelTripResponse;
 import com.taxidriver.app.ApiResponse.PastTripDetailResponse.PastTripDetailResponse;
+import com.taxidriver.app.ApiResponse.UpcomingDetailResponse.UpcomingDetailResponse;
 import com.taxidriver.app.Connection.Services;
 import com.taxidriver.app.Connection.Utils;
 import com.taxidriver.app.Helper.DrawingHelper;
@@ -38,8 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class TripDetails extends AppCompatActivity implements OnMapReadyCallback {
+public class UpcomingTripDetail extends AppCompatActivity implements OnMapReadyCallback {
 
 
     public MapView mapView;
@@ -50,7 +51,8 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
             time,
             bookingId,
             cash,
-            comments;
+            comments,
+            cancel;
 
 
     protected RatingBar ratings;
@@ -60,7 +62,7 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
     private CircleImageView userImage;
 
 
-    private  GoogleMap googleMap;
+    private GoogleMap googleMap;
 
 
     private Services mApi;
@@ -69,10 +71,10 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trip_details);
+        setContentView(R.layout.activity_upcoming_trip_detail);
 
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle("Past Trips");
+            getSupportActionBar().setTitle("Upcoming Trips");
 
 
         mApi = Utils.getApiService();
@@ -88,12 +90,13 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
         if (getIntent() != null) {
             id = getIntent().getIntExtra("id",-1);
         }
-        if (id!=-1){
-        String Token = ((User) LocalPersistence.readObjectFromFile(TripDetails.this)).getAccessToken();
-        mApi.TripDetail("Bearer " + Token,
-                id).enqueue(new Callback<List<PastTripDetailResponse>>() {
+        if (id != -1) {
+
+        String Token = ((User) LocalPersistence.readObjectFromFile(UpcomingTripDetail.this)).getAccessToken();
+        mApi.UpcomingTripDetail("Bearer " + Token,
+                id).enqueue(new Callback<List<UpcomingDetailResponse>>() {
             @Override
-            public void onResponse(Call<List<PastTripDetailResponse>> call, Response<List<PastTripDetailResponse>> response) {
+            public void onResponse(Call<List<UpcomingDetailResponse>> call, Response<List<UpcomingDetailResponse>> response) {
                 if (response.isSuccessful()) {
                     DateFormat readFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
                     DateFormat writeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -101,7 +104,7 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
                     DateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy");
 
 
-                    PastTripDetailResponse pastTripDetailResponse = response.body().get(0);
+                    UpcomingDetailResponse pastTripDetailResponse = response.body().get(0);
 
 
                     String[] dateAndTime = pastTripDetailResponse.getAssignedAt().split(" ");
@@ -124,11 +127,7 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
                     }
 
 
-                    if (pastTripDetailResponse.getPayment() != null)
-                        cash.setText("$" + pastTripDetailResponse.getPayment().getTotal());
-                    else {
-                        cash.setText("$0.00");
-                    }
+
                     bookingId.setText(pastTripDetailResponse.getBookingId());
 
                     Picasso.get()
@@ -141,13 +140,15 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
                     userImage.setOnClickListener(v -> {
                         Bundle bundle=new Bundle();
                         bundle.putSerializable("user",pastTripDetailResponse.getUser());
-                        bundle.putInt("from",0);
-
+                        bundle.putInt("from",1);
                         Intent intent =new Intent(getApplicationContext(),DisplayProfile.class);
                         intent.putExtra("data",bundle);
                         startActivity(intent);
                     });
 
+                    cancel.setOnClickListener(v -> {
+                        callCancelApi(pastTripDetailResponse.getId(),Token);
+                    });
                     if (pastTripDetailResponse.getUser().getRating() != null)
                         ratings.setRating(Float.valueOf(pastTripDetailResponse.getUser().getRating()));
                     else {
@@ -164,14 +165,55 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
             }
 
             @Override
-            public void onFailure(Call<List<PastTripDetailResponse>> call, Throwable t) {
+            public void onFailure(Call<List<UpcomingDetailResponse>> call, Throwable t) {
 
             }
         });
 
-    }}
+    }
+    }
 
-    protected void updateMapContents(PastTripDetailResponse response) {
+    private void callCancelApi(Integer ids,String Token) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("YaadTaxi User App")
+                .setMessage("Are you sure want to cancel ride")
+                .setCancelable(false)
+                .setPositiveButton("Yes", (dialog, id) -> {
+
+                    dialog.dismiss();
+                    mApi.CancelTrip("Bearer "+Token,
+                            ids).enqueue(new Callback<List<CancelTripResponse>>() {
+                        @Override
+                        public void onResponse(Call<List<CancelTripResponse>> call, Response<List<CancelTripResponse>> response) {
+                            if (response.isSuccessful()){
+                                if (response.body()!=null){
+                                    finish();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<CancelTripResponse>> call, Throwable t) {
+
+                        }
+                    });
+
+
+                })
+                .setNegativeButton("No",(dialog,id)->{
+                    dialog.dismiss();
+                });
+
+        final AlertDialog alert = builder.create();
+        //2. now setup to change color of the button
+
+        alert.show();
+
+
+    }
+
+    protected void updateMapContents(UpcomingDetailResponse response) {
         // Since the mapView is re-used, need to remove pre-existing mapView features.
         DrawingHelper helper = new DrawingHelper(googleMap, this);
         LatLng from = new LatLng(Double.valueOf(response.getSLatitude()), Double.valueOf(response.getSLatitude()));
@@ -206,6 +248,7 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
         userImage = findViewById(R.id.user);
         ratings = findViewById(R.id.rating);
         mapView = (MapView) findViewById(R.id.map);
+        cancel=findViewById(R.id.cancel_action);
 
         mapView.onCreate(null);
         mapView.setClickable(false);
@@ -224,9 +267,4 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
 
         // If we have map data, update the map content.
 
-    }
-}
-
-
-
-
+    }}
