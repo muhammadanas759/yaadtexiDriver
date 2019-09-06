@@ -68,5 +68,7 @@
     <string name="recovery">Enter your phone number for recovery</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
+    <string name="arrived">Arrived</string>
+    <string name="endride">End Ride</string>
 
 </resources>

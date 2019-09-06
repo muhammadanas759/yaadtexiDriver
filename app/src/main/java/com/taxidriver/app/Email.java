@@ -45,7 +45,7 @@ public class Email extends AppCompatActivity {
         mNextbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View next) {
-                if (NetworkUtil.isConnectedToWifi(Email.this) || NetworkUtil.isConnectedToWifi(Email.this)) {
+                if (NetworkUtil.isConnectedToWifi(Email.this) || NetworkUtil.isConnectedToMobileNetwork(Email.this) || NetworkUtil.isConnectedToInternet(Email.this)) {
                     Email.this.checkEmail();
                 } else {
                     NetworkUtil.showNoInternetAvailableErrorDialog(Email.this);

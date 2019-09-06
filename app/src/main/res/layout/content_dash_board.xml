@@ -74,6 +74,79 @@
 
     </RelativeLayout>
 
+
+    <RelativeLayout
+        android:id="@+id/track"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+    >
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/where_to_go_size"
+
+
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/sides"
+            android:layout_marginRight="@dimen/sides"
+
+            android:layout_marginBottom="@dimen/bottom"
+            android:background="@color/white"
+            android:elevation="@dimen/toolbar_top">
+
+            <TextView
+                android:id="@+id/arrived"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/arrived"
+                android:background="@drawable/button_background"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/end"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/where_to_go_size"
+
+
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/sides"
+            android:layout_marginRight="@dimen/sides"
+
+            android:layout_marginBottom="@dimen/bottom"
+            android:background="@color/white"
+            android:elevation="@dimen/toolbar_top">
+
+            <TextView
+                android:id="@+id/endride"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/endride"
+                android:background="@drawable/button_background"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/offline"
         android:layout_width="match_parent"
@@ -283,16 +356,22 @@
                 android:animateLayoutChanges="true"
                 android:visibility="gone" />
 
-            <include
-                android:id="@+id/accept"
-                layout="@layout/accept_reject_layout"
-                android:layout_width="match_parent"
-                android:layout_height="330dp"
 
-                android:layout_alignParentBottom="true"
-                android:animateLayoutChanges="true"
-                android:visibility="gone" />
         </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include
+            android:id="@+id/accepts"
+            layout="@layout/accept_reject_layout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+
+            android:layout_alignParentBottom="true"
+            android:animateLayoutChanges="true"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </FrameLayout>

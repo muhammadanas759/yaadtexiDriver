@@ -59,6 +59,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.taxidriver.app.Activities.Summary;
 import com.taxidriver.app.Activities.Target;
@@ -73,7 +75,9 @@ import com.taxidriver.app.ApiResponse.Status.StatusResponse;
 import com.taxidriver.app.Connection.Services;
 import com.taxidriver.app.Connection.Utils;
 import com.taxidriver.app.Helper.DrawingHelper;
+import com.taxidriver.app.Model.DriverModel;
 import com.taxidriver.app.Model.Place;
+import com.taxidriver.app.Model.Riderequest;
 import com.taxidriver.app.Model.Taxi;
 import com.taxidriver.app.Model.User;
 import com.taxidriver.app.R;
@@ -83,8 +87,10 @@ import com.taxidriver.app.Utils.NetworkUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -141,6 +147,10 @@ public class DashBoard extends AppCompatActivity
     private boolean check;
 
 
+
+    private View arrived , endlayout;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +167,9 @@ public class DashBoard extends AppCompatActivity
         View v = navigationView.getHeaderView(0);
         profileImage = v.findViewById(R.id.profileimageView);
         nameView = v.findViewById(R.id.name);
+        arrived =findViewById(R.id.track);
+        endlayout=findViewById(R.id.end);
+
         user = ((User) LocalPersistence.readObjectFromFile(DashBoard.this));
         nameView.setText(user.getmFirstName() + " " + user.getmLastName());
 
@@ -194,52 +207,9 @@ public class DashBoard extends AppCompatActivity
             mEditor.commit();
             status("active");
         });
-        timer = new CountDownTimer(9 * 1000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                changeMarker();
-            }
 
-            @Override
-            public void onFinish() {
-                UpdateLocation();
-            }
-        };
 
-        //to get the state of the screen wheter a pin selection screen or main screen
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().getBoolean("request")) {
-                drawAcceptAndReject();
-            }
-            if (getIntent().getExtras().getBoolean("pick")) {
-                screenMain = false;
-                mMap.onCreate(savedInstanceState);
-                visibility(screenMain);
-                setMainForPickLocation();
-                Log.e("error", "does not occurr");
-                From = getIntent().getExtras().getParcelable("location");
-                To = (Place) getIntent().getExtras().getSerializable("place");
-            } else {
-                Log.e("error", "occurr");
 
-                screenMain = true;
-                mMap.onCreate(savedInstanceState);
-                visibility(screenMain);
-                setMainMapWithDrawer();
-                getcurrentLocation();
-                if (mCurrentLocationLongitudeLatitutde != null)
-                    timer.start();
-            }
-        } else {
-            screenMain = true;
-            mMap.onCreate(savedInstanceState);
-            visibility(screenMain);
-            setMainMapWithDrawer();
-            getcurrentLocation();
-            if (mCurrentLocationLongitudeLatitutde != null)
-                timer.start();
-
-        }
         if (mSharedPreferences.getBoolean("offline", true)) {
 
             status("offline");
@@ -247,6 +217,56 @@ public class DashBoard extends AppCompatActivity
         } else {
             status("active");
 
+
+            timer = new CountDownTimer(9 * 1000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                    changeMarker();
+                }
+
+                @Override
+                public void onFinish() {
+                    UpdateLocation();
+                }
+            };
+            Riderequest map = (Riderequest) LocalPersistence.readObjectFromFile(this, "map");
+
+            //to get the state of the screen wheter a pin selection screen or main screen
+            if (getIntent().getExtras() != null) {
+                if (map != null) {
+                    drawAcceptAndReject();
+                } else {
+                    if (getIntent().getExtras().getBoolean("pick")) {
+                        screenMain = false;
+                        mMap.onCreate(savedInstanceState);
+                        visibility(screenMain);
+                        setMainForPickLocation();
+                        Log.e("error", "does not occurr");
+                        From = getIntent().getExtras().getParcelable("location");
+                        To = (Place) getIntent().getExtras().getSerializable("place");
+                    } else {
+                        Log.e("error", "occurr");
+
+                        screenMain = true;
+                        mMap.onCreate(savedInstanceState);
+                        visibility(screenMain);
+                        setMainMapWithDrawer();
+                        getcurrentLocation();
+                        if (mCurrentLocationLongitudeLatitutde != null)
+                            timer.start();
+                    }
+                }
+            } else {
+                screenMain = true;
+                mMap.onCreate(savedInstanceState);
+                visibility(screenMain);
+                setMainMapWithDrawer();
+                getcurrentLocation();
+                if (mCurrentLocationLongitudeLatitutde != null)
+                    timer.start();
+
+            }
         }
 
 
@@ -255,32 +275,115 @@ public class DashBoard extends AppCompatActivity
     private View mAcceptAndReject;
 
     private void drawAcceptAndReject() {
+        Riderequest map= (Riderequest) LocalPersistence.readObjectFromFile(this,"map");
+        if (!map.isStatus()) {
+
+            mAcceptAndReject = findViewById(R.id.accepts);
 
 
-        mAcceptAndReject = findViewById(R.id.accept);
+            findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
+            mAcceptAndReject.setVisibility(View.VISIBLE);
 
-        findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
-        mAcceptAndReject.setVisibility(View.VISIBLE);
-
-
-        TextView mAccept = mAcceptAndReject.findViewById(R.id.accept);
-        TextView mCancel = mAcceptAndReject.findViewById(R.id.cancel);
-
-
-        String id = "";
-        mAccept.setOnClickListener(v -> {
-            acceptRequest(id);
-
-        });
+            TranslateAnimation animate = new TranslateAnimation(
+                    0,                 // fromXDelta
+                    0,                 // toXDelta
+                    mAcceptAndReject.getHeight() + 250,  // fromYDelta
+                    0);                // toYDelta
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            mAcceptAndReject.startAnimation(animate);
 
 
-        mCancel.setOnClickListener(v -> {
-            CancelRequest(id);
+            TextView name = mAcceptAndReject.findViewById(R.id.name);
+            TextView to = mAcceptAndReject.findViewById(R.id.pickuplocation);
 
-        });
+            TextView from = mAcceptAndReject.findViewById(R.id.dropoflocation);
+
+
+            name.setText(map.getName());
+            to.setText(map.getLocationName());
+            from.setText(map.getDestinationName());
+
+
+            TextView mAccept = mAcceptAndReject.findViewById(R.id.accept);
+            TextView mCancel = mAcceptAndReject.findViewById(R.id.decline);
+
+
+            String id = "";
+            mAccept.setOnClickListener(v -> {
+                acceptRequest(map.getRequestId());
+
+            });
+
+
+            mCancel.setOnClickListener(v -> {
+                CancelRequest(map.getRequestId());
+
+            });
+
+        }else{
+
+
+            mGoOffline.setVisibility(View.GONE);
+
+           changeTheMap();
+
+
+
+        }
 
 
     }
+
+    private void changeTheMap() {
+
+        Riderequest map= (Riderequest) LocalPersistence.readObjectFromFile(this,"map");
+        if (map.isArrived()){
+            arrived.setVisibility(View.GONE);
+            endlayout.setVisibility(View.VISIBLE);
+            TextView end=endlayout.findViewById(R.id.endride);
+            end.setOnClickListener(v->{
+                    updateFirebase(2);
+                    CancelRequest(map.getRequestId());
+                    LocalPersistence.deletefile(getApplicationContext(),"map");
+                    endlayout.setVisibility(View.GONE);
+                    this.map.clear();
+                    getcurrentLocation();
+                mGoOffline.setVisibility(View.VISIBLE);
+            });
+        }else{
+            arrived.setVisibility(View.VISIBLE);
+            TextView arrive=arrived.findViewById(R.id.arrived);
+            arrive.setOnClickListener(v->{
+                updateFirebase(1);
+                DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
+                String url = helper.getDirectionsUrl(new LatLng(Double.valueOf(map.getUserlocationlat()),
+                                Double.valueOf(map.getUserlocationlong())
+                                ),
+                        new LatLng(Double.valueOf(map.getDestlat()), Double.valueOf(map.getDestlng())));
+                helper.run(url);
+                drawAcceptAndReject();
+
+
+            });
+        }
+    }
+
+    private void updateFirebase(int i) {
+        FirebaseDatabase mDatabase= FirebaseDatabase.getInstance();
+        DatabaseReference mRef = mDatabase.getReference();
+
+        Riderequest map= (Riderequest) LocalPersistence.readObjectFromFile(this,"map");
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("status", ""+i);
+
+
+        mRef.child("Users").child(map.getRequestId()).updateChildren(result);
+
+        map.setArrived(true);
+        LocalPersistence.witeObjectToFile(getApplicationContext(),map,"map");
+      }
 
     private void CancelRequest(String id) {
         String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
@@ -292,9 +395,17 @@ public class DashBoard extends AppCompatActivity
             public void onResponse(Call<CancelTripResponse> call, Response<CancelTripResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
+                        Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom);
+
+
                         mAcceptAndReject.setVisibility(View.GONE);
+                        mAcceptAndReject.startAnimation(slideDown);
                         findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
+                        LocalPersistence.deletefile(getApplicationContext(),"map");
+
+
                         map.clear();
+                        getcurrentLocation();
 
                     }
                 }
@@ -302,7 +413,7 @@ public class DashBoard extends AppCompatActivity
 
             @Override
             public void onFailure(Call<CancelTripResponse> call, Throwable t) {
-
+                Log.e(TAG, "onFailure: ",t );
             }
         });
 
@@ -315,35 +426,47 @@ public class DashBoard extends AppCompatActivity
 
         String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
 
+        Riderequest maps= (Riderequest) LocalPersistence.readObjectFromFile(this,"map");
+
+        FirebaseDatabase mDatabase= FirebaseDatabase.getInstance();
+        DatabaseReference mRef = mDatabase.getReference();
 
         mApi.AcceptRideRequest("Bearer " + Token,
-                id).enqueue(new Callback<List<AcceptRideResponse>>() {
+                id).enqueue(new Callback<AcceptRideResponse>() {
             @Override
-            public void onResponse(Call<List<AcceptRideResponse>> call, Response<List<AcceptRideResponse>> response) {
+            public void onResponse(Call<AcceptRideResponse> call, Response<AcceptRideResponse>response) {
 
                 if (response.isSuccessful()) {
-                    if (!response.body().isEmpty()) {
-                        List<AcceptRideResponse> rides = response.body();
 
-                        if (rides.contains(id)) {
+                     AcceptRideResponse ride=  response.body();
 
-                            ride = rides.get(rides.indexOf(id));
 
+                            Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom);
+
+
+                            mAcceptAndReject.setVisibility(View.GONE);
+                            mAcceptAndReject.startAnimation(slideDown);
                             DrawingHelper helper = new DrawingHelper(map, getApplicationContext());
-                            String url = helper.getDirectionsUrl(new LatLng(mCurrentLocationLongitudeLatitutde.getLatitude(),
+                    String url = helper.getDirectionsUrl(new LatLng(mCurrentLocationLongitudeLatitutde.getLatitude(),
                                             mCurrentLocationLongitudeLatitutde.getLongitude()),
-                                    new LatLng(ride.getDLatitude(), ride.getDLongitude()));
+                                    new LatLng(ride.getSLatitude(), ride.getSLongitude()));
                             helper.run(url);
 
 
-                        }
+                            DriverModel model =new DriverModel(maps.getRequestId(),((AcceptRideResponse)response.body()).getUser().getDeviceToken(),((AcceptRideResponse)response.body()).getUser().getFirstName(),"0");
+
+                            mRef.child("Users").child(maps.getRequestId()).setValue(model);
+                            maps.setStatus(true);
+                            LocalPersistence.witeObjectToFile(getApplicationContext(),maps,"map");
+                    drawAcceptAndReject();
+
                     }
                 }
-            }
+
 
             @Override
-            public void onFailure(Call<List<AcceptRideResponse>> call, Throwable t) {
-
+            public void onFailure(Call<AcceptRideResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
             }
         });
 
@@ -491,12 +614,15 @@ public class DashBoard extends AppCompatActivity
                             Log.e(TAG, "onResponse: " + offline);
 
                             if (offline.equals("offline")) {
+
                                 offlineView.setVisibility(View.VISIBLE);
                                 mGoOffline.setVisibility(View.GONE);
+                                if (timer!=null)
                                 timer.cancel();
                             } else {
                                 offlineView.setVisibility(View.GONE);
                                 mGoOffline.setVisibility(View.VISIBLE);
+                                if (timer!=null)
                                 timer.start();
                             }
                         }
@@ -1169,7 +1295,8 @@ public class DashBoard extends AppCompatActivity
                             mCurrentLocationLongitudeLatitutde = currentlocation;
                             map.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
 //         Creating a marker
-                            timer.start();
+                            if (timer!=null)
+                                timer.start();
                             MarkerOptions markerOptions = new MarkerOptions();
 
                             // Setting the position for the marker
@@ -1199,7 +1326,8 @@ public class DashBoard extends AppCompatActivity
                                                 mCurrentLocationLongitudeLatitutde = currentlocation;
                                                 map.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
 //         Creating a marker
-                                                timer.start();
+                                                if (timer!=null)
+                                                    timer.start();
                                                 MarkerOptions markerOptions = new MarkerOptions();
 
                                                 // Setting the position for the marker

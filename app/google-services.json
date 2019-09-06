@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:249492054986:android:55c8876361aedff5",
+        "mobilesdk_app_id": "1:249492054986:android:31b0109aa37b1125",
         "android_client_info": {
-          "package_name": "com.taxi.app"
+          "package_name": "com.taxidriver.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "249492054986-21r0frtha1dke2ciolnges86jfo8fup0.apps.googleusercontent.com",
+          "client_id": "249492054986-928be1fs4a4r2m5isd9qrf9e8ai1lufo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.taxi.app",
-            "certificate_hash": "761537f6e544dcf2018d5a380bca3bd96b4cafe2"
+            "package_name": "com.taxidriver.app",
+            "certificate_hash": "108598ddf8503080c1bd91966a2e571919132521"
           }
         },
         {
@@ -45,17 +45,54 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:249492054986:android:31b0109aa37b1125",
+        "mobilesdk_app_id": "1:249492054986:android:ae4838fac62c8c65",
         "android_client_info": {
-          "package_name": "com.taxidriver.app"
+          "package_name": "com.travel.taxi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "249492054986-928be1fs4a4r2m5isd9qrf9e8ai1lufo.apps.googleusercontent.com",
+          "client_id": "249492054986-6k8lekbnp050bo3i72q6jh61anpo1bhg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.taxidriver.app",
+            "package_name": "com.travel.taxi",
+            "certificate_hash": "108598ddf8503080c1bd91966a2e571919132521"
+          }
+        },
+        {
+          "client_id": "249492054986-beve54rv8cin4nbvtiod7bka430ie5f0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGbOXFMXhfPQ5NKrtZrwuCgoTUxNJWX6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249492054986-beve54rv8cin4nbvtiod7bka430ie5f0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249492054986:android:807329de495c7854",
+        "android_client_info": {
+          "package_name": "com.traveltaxi.yaadtaxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249492054986-cva1m0mug8bejn87kmvm7bq7117v2d28.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.traveltaxi.yaadtaxi",
             "certificate_hash": "108598ddf8503080c1bd91966a2e571919132521"
           }
         },

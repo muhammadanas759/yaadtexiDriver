@@ -180,7 +180,7 @@ public interface Services {
     Call<List<UpcomingDetailResponse>> UpcomingTripDetail(@Header("Authorization") String token,
                                                           @Query("request_id") Integer request_id);
 
-    @GET("api/provider/yaad/cancel/trip")
+    @POST("api/provider/yaad/cancel/trip")
     Call<CancelTripResponse> CancelTrip(@Header("Authorization") String token,
                                               @Query("id") String request_id);
 
@@ -190,7 +190,7 @@ public interface Services {
 
 
     @POST("api/provider/yaad/accept/trip")
-    Call<List<AcceptRideResponse>> AcceptRideRequest(@Header("Authorization") String token,
+    Call<AcceptRideResponse> AcceptRideRequest(@Header("Authorization") String token,
                                                      @Query("id") String id);
 
 
