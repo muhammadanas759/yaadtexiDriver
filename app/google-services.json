@@ -82,17 +82,54 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:249492054986:android:807329de495c7854",
+        "mobilesdk_app_id": "1:249492054986:android:b0b2b99d30abb3d97b6533",
         "android_client_info": {
-          "package_name": "com.traveltaxi.yaadtaxi"
+          "package_name": "com.yaaddrivertaxi.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "249492054986-cva1m0mug8bejn87kmvm7bq7117v2d28.apps.googleusercontent.com",
+          "client_id": "249492054986-skniih2u2rfaentqk3s4ba8i6oai4672.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.traveltaxi.yaadtaxi",
+            "package_name": "com.yaaddrivertaxi.app",
+            "certificate_hash": "108598ddf8503080c1bd91966a2e571919132521"
+          }
+        },
+        {
+          "client_id": "249492054986-beve54rv8cin4nbvtiod7bka430ie5f0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGbOXFMXhfPQ5NKrtZrwuCgoTUxNJWX6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249492054986-beve54rv8cin4nbvtiod7bka430ie5f0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249492054986:android:9875d21e6ac01fcf7b6533",
+        "android_client_info": {
+          "package_name": "com.yaadusertaxi.yaadtaxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249492054986-m5m33f8e9q0vhv7tnio50vqrhbtsk2m8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yaadusertaxi.yaadtaxi",
             "certificate_hash": "108598ddf8503080c1bd91966a2e571919132521"
           }
         },
