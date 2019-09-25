@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Target extends AppCompatActivity {
-private TextView mEarning,mTargetCompleted;
+private TextView mEarning,mTargetCompleted,noRides;
 ProgressBar mProgressBar;
 private RecyclerView recyclerView;
 Services api;
@@ -44,7 +45,6 @@ User data;
             @Override
             public void onResponse(Call<TargetResponse> call, Response<TargetResponse> response) {
                 if(response.isSuccessful()){
-                    Toast.makeText(Target.this, "success", Toast.LENGTH_SHORT).show();
                     mTargetCompleted.setText(String.valueOf(response.body().getRidesCount()).concat("/10"));
                    mProgressBar.setProgress(response.body().getRidesCount()*10);
                     recyclerView.setHasFixedSize(true);
@@ -52,6 +52,9 @@ User data;
                     recyclerView.setLayoutManager(linearLayoutManager);
                     TargetAdapter adapter=new TargetAdapter(Target.this,response.body().getRides());
                     recyclerView.setAdapter(adapter);
+                    if(response.body().getRides().isEmpty()){
+noRides.setVisibility(View.VISIBLE);
+                    }
                 }
                 else{
                     Toast.makeText(Target.this, "not", Toast.LENGTH_SHORT).show();
@@ -77,6 +80,7 @@ User data;
     private void init() {
     mEarning=findViewById(R.id.targetearning);
     mTargetCompleted=findViewById(R.id.targetcompleted);
+    noRides=findViewById(R.id.norides);
     mProgressBar=findViewById(R.id.ProgressBar);
     api= Utils.getApiService();
     data = (User) LocalPersistence.readObjectFromFile(Target.this);

@@ -18,7 +18,6 @@ public class Trips extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trips);
 
-
         getSupportActionBar().setTitle("History");
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
         viewPager=(ViewPager)findViewById(R.id.viewPager);

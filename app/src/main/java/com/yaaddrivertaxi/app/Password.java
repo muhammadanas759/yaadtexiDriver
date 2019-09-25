@@ -135,6 +135,7 @@ mBackbtn.setOnClickListener(new View.OnClickListener() {
                     dialog.dismiss();
                     if (response.body().getAccessToken() != null) {
                         com.yaaddrivertaxi.app.Model.User currentUser = new com.yaaddrivertaxi.app.Model.User(response.body().getEmail(),response.body().getFirstName() ,response.body().getLastName(),password, response.body().getMobile(), response.body().getDevice().getId().toString(), response.body().getDevice().getToken()," ",response.body().getAccessToken());
+                        currentUser.setmUserAvatart(response.body().getAvatar());
                         LocalPersistence.witeObjectToFile(getApplicationContext(),currentUser);
                         Intent intent= new Intent(getApplicationContext(), Intermediate.class);
                         Bundle bundle=new Bundle();

@@ -171,11 +171,11 @@ public class DashBoard extends AppCompatActivity
 
         user = ((User) LocalPersistence.readObjectFromFile(DashBoard.this));
         nameView.setText(user.getmFirstName() + " " + user.getmLastName());
-
         Picasso.get()
                 .load("http://www.yaadtaxi.com/providerprofilepics/" + user.getmUserAvatart())
                 .placeholder(R.drawable.ic_dummy_user)
                 .into(profileImage);
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,14 +208,12 @@ public class DashBoard extends AppCompatActivity
         });
 
 
-
         if (mSharedPreferences.getBoolean("offline", true)) {
 
             status("offline");
 
         } else {
             status("active");
-
 
             timer = new CountDownTimer(9 * 1000, 1000) {
                 @Override
@@ -1607,7 +1605,12 @@ public class DashBoard extends AppCompatActivity
             startActivity(new Intent(DashBoard.this, help.class));
 
         } else if (id == R.id.share) {
-
+            Intent shareIntent =   new Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Share Yaadtaxi UserApp ");
+            String app_url = " https://play.google.com/store/apps/details?id=com.yaaddrivertaxi.app";
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,app_url);
+            startActivity(Intent.createChooser(shareIntent, "Share via"));
         } else if (id == R.id.logout) {
             logoutDialog();
         }

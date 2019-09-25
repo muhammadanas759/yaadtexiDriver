@@ -59,10 +59,8 @@ public interface Services {
     @GET("api/provider/yaad/summary")
     Call<SummaryResponse> Summary(@Header("Authorization") String token);
 
-
     @GET("api/provider/yaad/target")
     Call<TargetResponse> Target(@Header("Authorization") String token);
-
 
     @GET("api/provider/yaad/help")
     Call<HelpResponse> Help(@Header("Authorization") String token);

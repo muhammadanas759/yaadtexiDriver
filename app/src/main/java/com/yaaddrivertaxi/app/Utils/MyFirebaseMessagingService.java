@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -38,7 +39,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Map<String,String> payload= remoteMessage.getData();
-//        Log.e("MyFirebaseMessagingService", "From: " + remoteMessage.getFrom());
+        Log.e("MyFirebaseMessagingService", "From: " + remoteMessage.getFrom());
 //        Log.e("MyFirebaseMessagingService", "Notification Message Body: " + payload.get("user_fullname"));
 //        String message="this";
 //        String req_id=payload.get("request_id");

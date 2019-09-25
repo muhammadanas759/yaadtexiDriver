@@ -154,32 +154,45 @@ public class UpdateProfile extends AppCompatActivity {
         save = findViewById(R.id.savebtn);
         mApi = Utils.getApiService2();
         String Token = ((User) LocalPersistence.readObjectFromFile(UpdateProfile.this)).getAccessToken();
-        mApi.getProfile("Bearer " + Token).enqueue(new Callback<UpdateProfileResponse>() {
-            @Override
-            public void onResponse(Call<UpdateProfileResponse> call, Response<UpdateProfileResponse> response) {
+        com.yaaddrivertaxi.app.Model.User currentUser = new com.yaaddrivertaxi.app.Model.User();
+       currentUser= (User) LocalPersistence.readObjectFromFile(UpdateProfile.this);
 
-                if(response.isSuccessful()){
-                UpdateProfileResponse data=response.body();
-                f_name.setText(data.getFirstName());
-                l_name.setText(data.getLastName());
-                phone.setText(data.getMobile());
-                email.setText(data.getEmail());
-                    Picasso.get()
-                            .load("http://www.yaadtaxi.com/providerprofilepics/"+response.body().getAvatar())
-                            .placeholder(R.drawable.ic_dummy_user)
-                            .into(userImage);
-//                service.setText(data.getService().getServiceType().getName());
-                    service.setText(data.getService().getServiceType().getName());
+        f_name.setText(currentUser.getmFirstName());
+        l_name.setText(currentUser.getmLastName());
+        phone.setText(currentUser.getmPhoneNumber());
+        email.setText(currentUser.getmEmail());
+        Picasso.get()
+                .load("http://www.yaadtaxi.com/providerprofilepics/"+currentUser.getmUserAvatart())
+                .placeholder(R.drawable.ic_dummy_user)
+                .into(userImage);
+        service.setText("no service");
 
-                }
-                Toast.makeText(UpdateProfile.this, ""+response.message(), Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onFailure(Call<UpdateProfileResponse> call, Throwable t) {
-                Log.e("ERROR", "onFailure: ");
-            }
-        });
+//        mApi.getProfile("Bearer " + Token).enqueue(new Callback<UpdateProfileResponse>() {
+//            @Override
+//            public void onResponse(Call<UpdateProfileResponse> call, Response<UpdateProfileResponse> response) {
+//
+//                if(response.isSuccessful()){
+//                UpdateProfileResponse data=response.body();
+//                f_name.setText(data.getFirstName());
+//                l_name.setText(data.getLastName());
+//                phone.setText(data.getMobile());
+//                email.setText(data.getEmail());
+//                    Picasso.get()
+//                            .load("http://www.yaadtaxi.com/providerprofilepics/"+response.body().getAvatar())
+//                            .placeholder(R.drawable.ic_dummy_user)
+//                            .into(userImage);
+//                    service.setText("no service");
+//
+//                }
+//                Toast.makeText(UpdateProfile.this, ""+response.message(), Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UpdateProfileResponse> call, Throwable t) {
+//                Log.e("ERROR", "onFailure: ");
+//            }
+//        });
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -211,12 +224,12 @@ public class UpdateProfile extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (file != null) {
+                MultipartBody.Part body=null;
+                    if(file!=null) {
+                        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                        body = MultipartBody.Part.createFormData("avatar", file.getName(), requestFile);
+                    }
 
-
-
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                    MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", file.getName(), requestFile);
                     RequestBody fname= RequestBody.create(MultipartBody.FORM,f_name.getText().toString());
                     RequestBody lname= RequestBody.create(MultipartBody.FORM,l_name.getText().toString());
                     RequestBody emails= RequestBody.create(MultipartBody.FORM,email.getText().toString());
@@ -243,6 +256,11 @@ public class UpdateProfile extends AppCompatActivity {
                                 LocalPersistence.deletefile(UpdateProfile.this);
                                 LocalPersistence.witeObjectToFile(UpdateProfile.this, data);
                                 Toast.makeText(UpdateProfile.this, "successfully updated", Toast.LENGTH_SHORT).show();
+
+                                f_name.setText(response.body().getFirstName());
+                                l_name.setText(response.body().getLastName());
+                                phone.setText(response.body().getMobile());
+                                email.setText(response.body().getEmail());
                                 Picasso.get()
                                         .load("http://www.yaadtaxi.com/providerprofilepics/"+response.body().getAvatar())
                                         .placeholder(R.drawable.ic_dummy_user)
@@ -263,10 +281,7 @@ public class UpdateProfile extends AppCompatActivity {
                             Toast.makeText(UpdateProfile.this, "Onfailure", Toast.LENGTH_SHORT).show();
                         }
                     });
-                } else {
 
-                    Toast.makeText(UpdateProfile.this, "please select image", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
