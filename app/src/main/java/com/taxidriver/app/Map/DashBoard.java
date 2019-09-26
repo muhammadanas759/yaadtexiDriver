@@ -90,7 +90,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -150,6 +149,10 @@ public class DashBoard extends AppCompatActivity
 
     private View arrived , endlayout;
 
+
+    Riderequest maps;
+
+    private View mAcceptAndReject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,7 +238,7 @@ public class DashBoard extends AppCompatActivity
             //to get the state of the screen wheter a pin selection screen or main screen
             if (getIntent().getExtras() != null) {
                 if (map != null) {
-                    drawAcceptAndReject();
+                    getcurrentLocation();
                 } else {
                     if (getIntent().getExtras().getBoolean("pick")) {
                         screenMain = false;
@@ -272,66 +275,65 @@ public class DashBoard extends AppCompatActivity
 
     }
 
-    private View mAcceptAndReject;
-
     private void drawAcceptAndReject() {
+
         Riderequest map= (Riderequest) LocalPersistence.readObjectFromFile(this,"map");
-        if (!map.isStatus()) {
+        if (map != null) {
+            if (!map.isStatus()) {
 
-            mAcceptAndReject = findViewById(R.id.accepts);
-
-
-            findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
-            mAcceptAndReject.setVisibility(View.VISIBLE);
-
-            TranslateAnimation animate = new TranslateAnimation(
-                    0,                 // fromXDelta
-                    0,                 // toXDelta
-                    mAcceptAndReject.getHeight() + 250,  // fromYDelta
-                    0);                // toYDelta
-            animate.setDuration(500);
-            animate.setFillAfter(true);
-            mAcceptAndReject.startAnimation(animate);
+                mAcceptAndReject = findViewById(R.id.accepts);
 
 
-            TextView name = mAcceptAndReject.findViewById(R.id.name);
-            TextView to = mAcceptAndReject.findViewById(R.id.pickuplocation);
+                findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
+                mAcceptAndReject.setVisibility(View.VISIBLE);
 
-            TextView from = mAcceptAndReject.findViewById(R.id.dropoflocation);
-
-
-            name.setText(map.getName());
-            to.setText(map.getLocationName());
-            from.setText(map.getDestinationName());
-
-
-            TextView mAccept = mAcceptAndReject.findViewById(R.id.accept);
-            TextView mCancel = mAcceptAndReject.findViewById(R.id.decline);
+                TranslateAnimation animate = new TranslateAnimation(
+                        0,                 // fromXDelta
+                        0,                 // toXDelta
+                        mAcceptAndReject.getHeight() + 250,  // fromYDelta
+                        0);                // toYDelta
+                animate.setDuration(500);
+                animate.setFillAfter(true);
+                mAcceptAndReject.startAnimation(animate);
 
 
-            String id = "";
-            mAccept.setOnClickListener(v -> {
-                acceptRequest(map.getRequestId());
+                TextView name = mAcceptAndReject.findViewById(R.id.name);
+                TextView to = mAcceptAndReject.findViewById(R.id.pickuplocation);
 
-            });
-
-
-            mCancel.setOnClickListener(v -> {
-                CancelRequest(map.getRequestId());
-
-            });
-
-        }else{
+                TextView from = mAcceptAndReject.findViewById(R.id.dropoflocation);
 
 
-            mGoOffline.setVisibility(View.GONE);
+                name.setText(map.getName());
+                to.setText(map.getLocationName());
+                from.setText(map.getDestinationName());
 
-           changeTheMap();
+
+                TextView mAccept = mAcceptAndReject.findViewById(R.id.accept);
+                TextView mCancel = mAcceptAndReject.findViewById(R.id.decline);
 
 
+                String id = "";
+                mAccept.setOnClickListener(v -> {
+                    acceptRequest(map.getRequestId());
 
+                });
+
+
+                mCancel.setOnClickListener(v -> {
+                    CancelRequest(map.getRequestId());
+
+                });
+
+            } else {
+
+
+                mGoOffline.setVisibility(View.GONE);
+
+                changeTheMap();
+
+
+            }
         }
-
 
     }
 
@@ -342,6 +344,7 @@ public class DashBoard extends AppCompatActivity
             arrived.setVisibility(View.GONE);
             endlayout.setVisibility(View.VISIBLE);
             TextView end=endlayout.findViewById(R.id.endride);
+
             end.setOnClickListener(v->{
                     updateFirebase(2);
                     CancelRequest(map.getRequestId());
@@ -351,11 +354,19 @@ public class DashBoard extends AppCompatActivity
                     getcurrentLocation();
                 mGoOffline.setVisibility(View.VISIBLE);
             });
+            DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
+            String url = helper.getDirectionsUrl(new LatLng(Double.valueOf(map.getUserlocationlat()),
+                            Double.valueOf(map.getUserlocationlong())
+                    ),
+                    new LatLng(Double.valueOf(map.getDestlat()), Double.valueOf(map.getDestlng())));
+            helper.run(url);
+            drawAcceptAndReject();
         }else{
             arrived.setVisibility(View.VISIBLE);
             TextView arrive=arrived.findViewById(R.id.arrived);
             arrive.setOnClickListener(v->{
                 updateFirebase(1);
+                this.map.clear();
                 DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
                 String url = helper.getDirectionsUrl(new LatLng(Double.valueOf(map.getUserlocationlat()),
                                 Double.valueOf(map.getUserlocationlong())
@@ -366,6 +377,12 @@ public class DashBoard extends AppCompatActivity
 
 
             });
+            DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
+            String url = helper.getDirectionsUrl(new LatLng(mCurrentLocationLongitudeLatitutde.getLatitude(),
+                            mCurrentLocationLongitudeLatitutde.getLongitude()),
+                    new LatLng(Double.valueOf(map.getUserlocationlat()), Double.valueOf(map.getUserlocationlong())));
+            helper.run(url);
+
         }
     }
 
@@ -1357,6 +1374,10 @@ public class DashBoard extends AppCompatActivity
                             fusedLocationClient.requestLocationUpdates(locationRequest,
                                     locationCallback,
                                     null);
+                        }
+                        if (maps != null) {
+                            drawAcceptAndReject();
+                            maps = (Riderequest) LocalPersistence.readObjectFromFile(DashBoard.this, "map");
                         }
                     }
 

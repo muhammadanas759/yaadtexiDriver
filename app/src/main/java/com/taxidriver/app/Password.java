@@ -1,9 +1,6 @@
 package com.taxidriver.app;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,22 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.taxidriver.app.Activities.ForgotPass;
-import com.taxidriver.app.Activities.PhoneNumber;
-
 import com.taxidriver.app.ApiResponse.login.User;
 import com.taxidriver.app.Connection.Services;
 import com.taxidriver.app.Connection.Utils;
 import com.taxidriver.app.Map.Intermediate;
 import com.taxidriver.app.Utils.LocalPersistence;
 import com.taxidriver.app.Utils.NetworkUtil;
-
-import java.io.Serializable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -106,6 +101,7 @@ public static String pass;
                                 String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                                         Settings.Secure.ANDROID_ID);
                                 String token = task.getResult().getToken();
+                                Log.e("token", token);
                                 callApi(android_id,token,email,pass,dialog);
                             }
                         });
@@ -150,11 +146,11 @@ mBackbtn.setOnClickListener(new View.OnClickListener() {
 
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        Toast.makeText(Password.this, "Successfully login", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Password.this, "Successfully login", Toast.LENGTH_SHORT).show();
                         finish();
                     }else{
                         dialog.dismiss();
-                        Toast.makeText(Password. this, "The email address or password you entered is incorrect.", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Password. this, "The email address or password you entered is incorrect.", Toast.LENGTH_SHORT).show();
 
                     }
 
