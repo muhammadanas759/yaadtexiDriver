@@ -48,8 +48,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@null"
-
-                android:text="First Name"
                 android:textSize="20dp" />
         </LinearLayout>
 <View
@@ -77,7 +75,6 @@ android:paddingLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@null"
-                android:text="Second Name"
                 android:textSize="20dp" />
         </LinearLayout>
 
@@ -109,7 +106,6 @@ android:paddingLeft="10dp"
             android:layout_height="45dp"
             android:background="@null"
             android:inputType="number"
-            android:text="0335"
             android:textSize="20dp" />
     </LinearLayout>
     <View
@@ -138,7 +134,6 @@ android:paddingLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:background="@null"
-            android:text="anas@gmail.com"
             android:textSize="20dp"
             android:editable="false"/>
     </LinearLayout>
@@ -168,7 +163,7 @@ android:paddingLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:background="@null"
-            android:text="anas@gmail.com"
+            android:text="no service"
             android:textSize="20dp"
             android:editable="false"/>
     </LinearLayout>

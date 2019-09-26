@@ -49,7 +49,7 @@
                 android:background="@drawable/circleshape"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:max="100"
-                android:progress="25" />
+                android:progress="0" />
 
         </RelativeLayout>
         <LinearLayout
@@ -69,7 +69,7 @@
                 android:id="@+id/targetearning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="17"
+                android:text="0"
                 android:drawableLeft="@drawable/ic_attach_money_black_24dp"
                 android:gravity="center"
                 android:layout_gravity="center"
@@ -119,6 +119,15 @@
         android:layout_height="0dp"
         android:layout_weight="0.43"
         >
+        <TextView
+            android:id="@+id/norides"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Rides To Show"
+            android:fontFamily="@font/raleway_bold"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/targetrecyclerview"
             android:layout_height="match_parent"
