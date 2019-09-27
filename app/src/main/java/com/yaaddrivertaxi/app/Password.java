@@ -1,5 +1,4 @@
-package com.taxidriver.app;
-
+package com.yaaddrivertaxi.app;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,17 +19,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.taxidriver.app.Activities.ForgotPass;
-import com.taxidriver.app.ApiResponse.login.User;
-import com.taxidriver.app.Connection.Services;
-import com.taxidriver.app.Connection.Utils;
-import com.taxidriver.app.Map.Intermediate;
-import com.taxidriver.app.Utils.LocalPersistence;
-import com.taxidriver.app.Utils.NetworkUtil;
+import com.yaaddrivertaxi.app.Activities.ForgotPass;
+import com.yaaddrivertaxi.app.ApiResponse.login.User;
+import com.yaaddrivertaxi.app.Connection.Services;
+import com.yaaddrivertaxi.app.Connection.Utils;
+import com.yaaddrivertaxi.app.Map.Intermediate;
+import com.yaaddrivertaxi.app.Utils.LocalPersistence;
+import com.yaaddrivertaxi.app.Utils.NetworkUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class Password extends AppCompatActivity {
     private TextView mSignupbtn;
@@ -133,7 +133,7 @@ mBackbtn.setOnClickListener(new View.OnClickListener() {
                 if(response.isSuccessful()) {
                     dialog.dismiss();
                     if (response.body().getAccessToken() != null) {
-                        com.taxidriver.app.Model.User currentUser = new com.taxidriver.app.Model.User(response.body().getEmail(),response.body().getFirstName() ,response.body().getLastName(),password, response.body().getMobile(), response.body().getDevice().getId().toString(), response.body().getDevice().getToken()," ",response.body().getAccessToken());
+                        com.yaaddrivertaxi.app.Model.User currentUser = new com.yaaddrivertaxi.app.Model.User(response.body().getEmail(),response.body().getFirstName() ,response.body().getLastName(),password, response.body().getMobile(), response.body().getDevice().getId().toString(), response.body().getDevice().getToken()," ",response.body().getAccessToken());
                         LocalPersistence.witeObjectToFile(getApplicationContext(),currentUser);
                         Intent intent= new Intent(getApplicationContext(), Intermediate.class);
                         Bundle bundle=new Bundle();

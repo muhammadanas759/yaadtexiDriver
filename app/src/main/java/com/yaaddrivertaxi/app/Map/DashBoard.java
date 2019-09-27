@@ -211,6 +211,7 @@ public class DashBoard extends AppCompatActivity
             status("active");
         });
 
+        mMap.onCreate(savedInstanceState);
 
         if (mSharedPreferences.getBoolean("offline", true)) {
 
@@ -277,9 +278,10 @@ public class DashBoard extends AppCompatActivity
 
         Riderequest map= (Riderequest) LocalPersistence.readObjectFromFile(this,"map");
         if (map != null) {
+            mAcceptAndReject = findViewById(R.id.accepts);
             if (!map.isStatus()) {
 
-                mAcceptAndReject = findViewById(R.id.accepts);
+
 
 
                 findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
@@ -358,7 +360,7 @@ public class DashBoard extends AppCompatActivity
                     ),
                     new LatLng(Double.valueOf(map.getDestlat()), Double.valueOf(map.getDestlng())));
             helper.run(url);
-            drawAcceptAndReject();
+
         }else{
             arrived.setVisibility(View.VISIBLE);
             TextView arrive=arrived.findViewById(R.id.arrived);
@@ -375,6 +377,7 @@ public class DashBoard extends AppCompatActivity
 
 
             });
+            if (!map.isArrived()){
             DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
             String url = helper.getDirectionsUrl(new LatLng(mCurrentLocationLongitudeLatitutde.getLatitude(),
                             mCurrentLocationLongitudeLatitutde.getLongitude()),
@@ -382,6 +385,8 @@ public class DashBoard extends AppCompatActivity
             helper.run(url);
 
         }
+        }
+
     }
 
     private void updateFirebase(int i) {
@@ -462,7 +467,7 @@ public class DashBoard extends AppCompatActivity
                             mAcceptAndReject.setVisibility(View.GONE);
                             mAcceptAndReject.startAnimation(slideDown);
                             DrawingHelper helper = new DrawingHelper(map, getApplicationContext());
-                    String url = helper.getDirectionsUrl(new LatLng(mCurrentLocationLongitudeLatitutde.getLatitude(),
+                            String url = helper.getDirectionsUrl(new LatLng(mCurrentLocationLongitudeLatitutde.getLatitude(),
                                             mCurrentLocationLongitudeLatitutde.getLongitude()),
                                     new LatLng(ride.getSLatitude(), ride.getSLongitude()));
                             helper.run(url);
@@ -1308,6 +1313,7 @@ public class DashBoard extends AppCompatActivity
                             builder.zoom(16);
                             builder.target(loc);
                             mCurrentLocationLongitudeLatitutde = currentlocation;
+                            if (map!=null){
                             map.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
 //         Creating a marker
                             if (timer!=null)
@@ -1317,7 +1323,7 @@ public class DashBoard extends AppCompatActivity
                             // Setting the position for the marker
                             markerOptions.position(loc);
                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location));
-                            map.addMarker(markerOptions);
+                            map.addMarker(markerOptions);}
                         } else {
                             locationRequest = LocationRequest.create();
                             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -1373,10 +1379,10 @@ public class DashBoard extends AppCompatActivity
                                     locationCallback,
                                     null);
                         }
-                        if (maps != null) {
+
                             drawAcceptAndReject();
                             maps = (Riderequest) LocalPersistence.readObjectFromFile(DashBoard.this, "map");
-                        }
+
                     }
 
 
