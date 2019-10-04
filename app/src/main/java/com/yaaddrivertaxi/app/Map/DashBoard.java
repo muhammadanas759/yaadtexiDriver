@@ -70,6 +70,7 @@ import com.yaaddrivertaxi.app.Activities.help;
 import com.yaaddrivertaxi.app.Adapter.TaxiSlection;
 import com.yaaddrivertaxi.app.ApiResponse.AcceptRideRequest.AcceptRideResponse;
 import com.yaaddrivertaxi.app.ApiResponse.CancelTrip.CancelTripResponse;
+import com.yaaddrivertaxi.app.ApiResponse.DriverStatusUpdate.DriverStatusResponse;
 import com.yaaddrivertaxi.app.ApiResponse.Logout.LogoutResponse;
 import com.yaaddrivertaxi.app.ApiResponse.Status.StatusResponse;
 import com.yaaddrivertaxi.app.Connection.Services;
@@ -192,8 +193,6 @@ public class DashBoard extends AppCompatActivity
         offlineView = findViewById(R.id.offline);
         mGoOffline = findViewById(R.id.go_offline);
         mGoOnline = findViewById(R.id.go_online);
-
-
         mGoOffline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,6 +228,7 @@ public class DashBoard extends AppCompatActivity
 
                 @Override
                 public void onFinish() {
+                    if(mCurrentLocationLongitudeLatitutde!=null)
                     UpdateLocation();
                 }
             };
@@ -299,6 +299,8 @@ public class DashBoard extends AppCompatActivity
 
                 TextView name = mAcceptAndReject.findViewById(R.id.name);
                 TextView to = mAcceptAndReject.findViewById(R.id.pickuplocation);
+                CircleImageView imageView = mAcceptAndReject.findViewById(R.id.acceptUserimage);
+
 
                 TextView from = mAcceptAndReject.findViewById(R.id.dropoflocation);
 
@@ -306,7 +308,10 @@ public class DashBoard extends AppCompatActivity
                 name.setText(map.getName());
                 to.setText(map.getLocationName());
                 from.setText(map.getDestinationName());
-
+                Picasso.get()
+                        .load("http://yaadtaxi.com/userprofilepics/" +map.getUserImage())
+                        .placeholder(R.drawable.ic_dummy_user)
+                        .into(imageView);
 
                 TextView mAccept = mAcceptAndReject.findViewById(R.id.accept);
                 TextView mCancel = mAcceptAndReject.findViewById(R.id.decline);
@@ -320,7 +325,7 @@ public class DashBoard extends AppCompatActivity
 
 
                 mCancel.setOnClickListener(v -> {
-                    CancelRequest(map.getRequestId());
+                    CancelRequest(map.getRequestId(),true);
 
                 });
 
@@ -347,12 +352,11 @@ public class DashBoard extends AppCompatActivity
 
             end.setOnClickListener(v->{
                     updateFirebase(2);
-                    CancelRequest(map.getRequestId());
-                    LocalPersistence.deletefile(getApplicationContext(),"map");
-                    endlayout.setVisibility(View.GONE);
-                    this.map.clear();
-                    getcurrentLocation();
-                mGoOffline.setVisibility(View.VISIBLE);
+                    statusdriver("DROPPED",map.getRequestId());
+//                    CancelRequest(map.getRequestId(),false);
+//                    LocalPersistence.deletefile(getApplicationContext(),"map");
+
+
             });
             DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
             String url = helper.getDirectionsUrl(new LatLng(Double.valueOf(map.getUserlocationlat()),
@@ -366,6 +370,8 @@ public class DashBoard extends AppCompatActivity
             TextView arrive=arrived.findViewById(R.id.arrived);
             arrive.setOnClickListener(v->{
                 updateFirebase(1);
+                statusdriver("ARRIVED",map.getRequestId());
+                statusdriver("PICKEDUP",map.getRequestId());
                 this.map.clear();
                 DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
                 String url = helper.getDirectionsUrl(new LatLng(Double.valueOf(map.getUserlocationlat()),
@@ -388,7 +394,69 @@ public class DashBoard extends AppCompatActivity
         }
 
     }
+public void statusdriver(String status,String id){
+    ProgressDialog dialog = new ProgressDialog(this);
+    dialog.setMessage("Loading...");
+    dialog.setCancelable(false);
+    dialog.show();
+    String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
 
+    Log.e(TAG, "onResponse: ");
+    mApi.DriverStatus("Bearer " + Token,
+            status,
+            id
+            )
+            .enqueue(new Callback<DriverStatusResponse>() {
+                @Override
+                public void onResponse(Call<DriverStatusResponse> call, Response<DriverStatusResponse> response) {
+                    if (response.isSuccessful()) {
+                        Log.e(TAG, "onResponse: " + response.body().getId() + "\n" + response.code());
+                        DriverStatusResponse driverStatusResponse=response.body();
+                        if(status.equals("ARRIVED")){
+                            dialog.dismiss();
+                            Toast.makeText(DashBoard.this, "arrived", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(status.equals("PICKEDUP")){
+                            dialog.dismiss();
+                            Toast.makeText(DashBoard.this, "picked up", Toast.LENGTH_SHORT).show();
+                        }
+                         else if( status.equals("DROPPED")){
+                            Toast.makeText(DashBoard.this, "dropped", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
+                            Riderequest maps= (Riderequest) LocalPersistence.readObjectFromFile(getApplicationContext(),"map");
+                            LocalPersistence.deletefile(getApplicationContext(),"map");
+                            Toast.makeText(DashBoard.this, "Ride Ended", Toast.LENGTH_SHORT).show();
+                            endlayout.setVisibility(View.GONE);
+                            mGoOffline.setVisibility(View.VISIBLE);
+                            map.clear();
+                            getcurrentLocation();
+                            mGoOffline.setVisibility(View.VISIBLE);
+                            status("");
+                        }
+                        else {
+                            dialog.dismiss();
+
+                            offlineView.setVisibility(View.GONE);
+                            mGoOffline.setVisibility(View.VISIBLE);
+                            if (timer!=null)
+                                timer.start();
+                        }
+                    }else{
+                        dialog.dismiss();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DriverStatusResponse> call, Throwable t) {
+                    Log.e(TAG, "onFailure: ", t);
+                    Log.e(TAG + "1", "onFailure: " + t.getMessage());
+                    dialog.dismiss();
+                }
+            });
+
+}
     private void updateFirebase(int i) {
         FirebaseDatabase mDatabase= FirebaseDatabase.getInstance();
         DatabaseReference mRef = mDatabase.getReference();
@@ -405,25 +473,31 @@ public class DashBoard extends AppCompatActivity
         LocalPersistence.witeObjectToFile(getApplicationContext(),map,"map");
       }
 
-    private void CancelRequest(String id) {
-        String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
+    private void CancelRequest(String id,boolean check) {
+        User user = ((User) LocalPersistence.readObjectFromFile(DashBoard.this));
 
 
-        mApi.CancelTrip("Bearer " + Token,
+        mApi.CancelTrip("Bearer " + user.getAccessToken(),
                 id).enqueue(new Callback<CancelTripResponse>() {
             @Override
             public void onResponse(Call<CancelTripResponse> call, Response<CancelTripResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom);
-
+                        CancelTripResponse cancelTripResponse=response.body();
+//                        Toast.makeText(DashBoard.this, "Ride cancelled", Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase mDatabase= FirebaseDatabase.getInstance();
+                        DatabaseReference mRef = mDatabase.getReference();
 
                         mAcceptAndReject.setVisibility(View.GONE);
                         mAcceptAndReject.startAnimation(slideDown);
                         findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
+                        Riderequest maps= (Riderequest) LocalPersistence.readObjectFromFile(getApplicationContext(),"map");
+                        Toast.makeText(DashBoard.this, "Ride has been Rejected", Toast.LENGTH_SHORT).show();
+    DriverModel model = new DriverModel(maps.getRequestId(), cancelTripResponse.getUser().getDeviceToken(), user.getmFirstName().concat(" " + user.getmLastName()), "3");
+    mRef.child("Users").child(maps.getRequestId()).setValue(model);
                         LocalPersistence.deletefile(getApplicationContext(),"map");
-
-
+                        mGoOffline.setVisibility(View.VISIBLE);
                         map.clear();
                         getcurrentLocation();
 
@@ -473,7 +547,7 @@ public class DashBoard extends AppCompatActivity
                             helper.run(url);
 
 
-                            DriverModel model =new DriverModel(maps.getRequestId(),((AcceptRideResponse)response.body()).getUser().getDeviceToken(),((AcceptRideResponse)response.body()).getUser().getFirstName(),"0");
+                            DriverModel model =new DriverModel(maps.getRequestId(),((AcceptRideResponse)response.body()).getUser().getDeviceToken(),((AcceptRideResponse)response.body()).getUser().getFirstName().concat(" "+((AcceptRideResponse)response.body()).getUser().getLastName()),"0");
 
                             mRef.child("Users").child(maps.getRequestId()).setValue(model);
                             maps.setStatus(true);
@@ -621,7 +695,10 @@ public class DashBoard extends AppCompatActivity
     }
 
     private void status(String offline) {
-
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
+        dialog.show();
         String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
 
         Log.e(TAG, "onResponse: ");
@@ -632,19 +709,53 @@ public class DashBoard extends AppCompatActivity
                         if (response.isSuccessful()) {
                             Log.e(TAG, "onResponse: " + response.body().getId() + "\n" + response.code());
                             Log.e(TAG, "onResponse: " + offline);
-
+                            StatusResponse statusResponse=response.body();
                             if (offline.equals("offline")) {
+                                dialog.dismiss();
+                                Log.e(TAG, "onResponse: offline");
 
                                 offlineView.setVisibility(View.VISIBLE);
                                 mGoOffline.setVisibility(View.GONE);
                                 if (timer!=null)
                                 timer.cancel();
-                            } else {
+                            }
+                            else if( offline.equals("DROPPED")){
+
+                                dialog.dismiss();
+                                Log.e(TAG, "onResponse: DROPPED");
+
+                                findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
+                                Riderequest maps= (Riderequest) LocalPersistence.readObjectFromFile(getApplicationContext(),"map");
+                                LocalPersistence.deletefile(getApplicationContext(),"map");
+                                Toast.makeText(DashBoard.this, "Ride Ended", Toast.LENGTH_SHORT).show();
+                                endlayout.setVisibility(View.GONE);
+                                mGoOffline.setVisibility(View.VISIBLE);
+                                map.clear();
+                                getcurrentLocation();
+                                mGoOffline.setVisibility(View.VISIBLE);
+                                status("");
+                            }
+                            else if( offline.equals("ARRIVED")){
+                                dialog.dismiss();
+                                Log.e(TAG, "onResponse: ARRIVED");
+
+                            } else if( offline.equals("PICKEDUP")){
+                                dialog.dismiss();
+                                Log.e(TAG, "onResponse: PICKEDUP");
+
+                            }
+
+                            else {
+                                dialog.dismiss();
+
                                 offlineView.setVisibility(View.GONE);
                                 mGoOffline.setVisibility(View.VISIBLE);
                                 if (timer!=null)
                                 timer.start();
                             }
+                        }else{
+                            dialog.dismiss();
+
                         }
                     }
 
@@ -652,6 +763,7 @@ public class DashBoard extends AppCompatActivity
                     public void onFailure(Call<StatusResponse> call, Throwable t) {
                         Log.e(TAG, "onFailure: ", t);
                         Log.e(TAG + "1", "onFailure: " + t.getMessage());
+                        dialog.dismiss();
                     }
                 });
 
@@ -1651,7 +1763,7 @@ public class DashBoard extends AppCompatActivity
     private void Logout() {
         String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
         LocalPersistence.deletefile(DashBoard.this);
-        if (NetworkUtil.isConnectedToInternet(getApplicationContext())) {
+        if (NetworkUtil.isConnectedToInternet(getApplicationContext()) || NetworkUtil.isConnectedToWifi(this) ) {
             ProgressDialog dialog = new ProgressDialog(DashBoard.this, R.style.AppCompatAlertDialogStyle);
             dialog.setMessage("Logging Out");
             dialog.show();
@@ -1696,6 +1808,7 @@ public class DashBoard extends AppCompatActivity
 
                     dialog.dismiss();
                     Logout();
+                    if(timer!=null)
                     timer.cancel();
 
                 })

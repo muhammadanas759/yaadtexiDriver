@@ -3,6 +3,7 @@ package com.yaaddrivertaxi.app.Connection;
 
 import com.yaaddrivertaxi.app.ApiResponse.AcceptRideRequest.AcceptRideResponse;
 import com.yaaddrivertaxi.app.ApiResponse.CancelTrip.CancelTripResponse;
+import com.yaaddrivertaxi.app.ApiResponse.DriverStatusUpdate.DriverStatusResponse;
 import com.yaaddrivertaxi.app.ApiResponse.ForgotPassword.ForgotResponse;
 import com.yaaddrivertaxi.app.ApiResponse.HelpResponse.HelpResponse;
 import com.yaaddrivertaxi.app.ApiResponse.Logout.LogoutResponse;
@@ -28,6 +29,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
@@ -85,6 +87,10 @@ public interface Services {
     Call<StatusResponse> StatusUpdate(@Header("Authorization") String token,
                                       @Query("service_status") String service_status);
 
+    @PUT("api/provider/yaad/trip/update/status")
+    Call<DriverStatusResponse> DriverStatus(@Header("Authorization") String token,
+                                            @Query("status") String status,
+                                            @Query("id") String id);
 
     //
 
@@ -181,17 +187,12 @@ public interface Services {
     @POST("api/provider/yaad/cancel/trip")
     Call<CancelTripResponse> CancelTrip(@Header("Authorization") String token,
                                               @Query("id") String request_id);
-
-
     @GET("api/provider/yaad/request/upcoming")
     Call<List<UpcomingResponse>> Upcoming(@Header("Authorization") String token);
-
 
     @POST("api/provider/yaad/accept/trip")
     Call<AcceptRideResponse> AcceptRideRequest(@Header("Authorization") String token,
                                                      @Query("id") String id);
-
-
 
 //    @GET("api/provider/yaad/add/money")
 //    Call<WalletproviderResponse> AddMoney(@Header("Authorization") String token,

@@ -1,6 +1,7 @@
 package com.yaaddrivertaxi.app.Activities;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -17,8 +18,9 @@ public class Trips extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trips);
-
         getSupportActionBar().setTitle("History");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         tabLayout=(TabLayout)findViewById(R.id.tabLayout);
         viewPager=(ViewPager)findViewById(R.id.viewPager);
 
@@ -49,6 +51,15 @@ public class Trips extends AppCompatActivity {
         });
 
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

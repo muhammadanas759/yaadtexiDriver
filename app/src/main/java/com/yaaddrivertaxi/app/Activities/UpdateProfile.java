@@ -144,7 +144,7 @@ public class UpdateProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
-        userImage = findViewById(R.id.updateImage);
+        userImage = findViewById(R.id.updateImage1);
         f_name = findViewById(R.id.updatefname);
         l_name = findViewById(R.id.updatesname);
         phone = findViewById(R.id.updatenumber);

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     >
 
@@ -18,17 +18,33 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/graylight"/>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textAllCaps="true"
-            android:textColor="@color/back"
-            android:text="name"
-            />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/acceptUserimage"
+        android:textColor="@color/back"
+        android:layout_marginLeft="10dp"
+        android:text="name"
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/acceptUserimage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"/>
+
+</RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,21 +54,24 @@
             >
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="30dp"
                 android:text="Pickup:"
+                android:textSize="16dp"
+                android:textStyle="bold"
                 android:textColor="@color/back"
-                android:gravity="right|center"
-                android:layout_weight=".3"
+                android:gravity="center"
+                android:layout_weight=".2"
                 />
             <TextView
                 android:id="@+id/pickuplocation"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
                 android:text="Pickup:"
                 android:textColor="@color/back"
                 android:gravity="left|center"
                 android:singleLine="true"
-                android:layout_weight=".7"
+                android:layout_weight=".8"
                 />
         </LinearLayout>
         <LinearLayout
@@ -63,27 +82,30 @@
             android:weightSum="1"
             >
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:text="Pickup:"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:text="Dropof:"
+                android:textSize="16dp"
+                android:textStyle="bold"
                 android:textColor="@color/back"
-                android:gravity="right|center"
-                android:layout_weight=".3"
+                android:gravity="center"
                 />
+
+
             <TextView
                 android:id="@+id/dropoflocation"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
                 android:text="Pickup:"
                 android:textColor="@color/back"
                 android:singleLine="true"
                 android:gravity="left|center"
-                android:layout_weight=".7"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:background="@color/white"
             android:orientation="horizontal">
 
@@ -115,7 +137,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom"

@@ -70,7 +70,8 @@
                 android:layout_weight=".03"
                 android:gravity="center"
                 android:text="HN"
-                android:textSize="18sp" />
+                android:textStyle="bold"
+                android:textSize="12dp" />
 
             <RatingBar
                 android:id="@+id/rating"
@@ -109,7 +110,8 @@
                 android:layout_weight=".03"
                 android:gravity="center"
                 android:text="Sedan"
-                android:textSize="18sp" />
+                android:textStyle="bold"
+                android:textSize="12dp" />
 
             <TextView
                 android:id="@+id/meta_data"

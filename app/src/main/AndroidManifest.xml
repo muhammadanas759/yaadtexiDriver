@@ -36,7 +36,9 @@
         <meta-data android:name="com.facebook.accountkit.ClientToken"
             android:value="@string/fb_acckit_client_token" />
 
-        <service android:name=".Utils.MyFirebaseMessagingService">
+        <service android:name=".Utils.MyFirebaseMessagingService"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

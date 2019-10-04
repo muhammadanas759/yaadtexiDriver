@@ -71,7 +71,6 @@ public class LocalPersistence {
             ObjectInputStream objectIn = null;
             Object object = null;
             try {
-
                 FileInputStream fileIn = context.getApplicationContext().openFileInput(filename);
                 objectIn = new ObjectInputStream(fileIn);
                 object = objectIn.readObject();

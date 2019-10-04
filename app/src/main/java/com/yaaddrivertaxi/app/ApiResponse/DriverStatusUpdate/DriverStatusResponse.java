@@ -1,9 +1,9 @@
-package com.yaaddrivertaxi.app.ApiResponse.CancelTrip;
+package com.yaaddrivertaxi.app.ApiResponse.DriverStatusUpdate;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.yaaddrivertaxi.app.ApiResponse.login.User;
 
-public class CancelTripResponse {
+public class DriverStatusResponse {
 
     @SerializedName("id")
     @Expose
@@ -52,25 +52,25 @@ public class CancelTripResponse {
     private String sAddress;
     @SerializedName("s_latitude")
     @Expose
-    private Double sLatitude;
+    private Float sLatitude;
     @SerializedName("s_longitude")
     @Expose
-    private Double sLongitude;
+    private Float sLongitude;
     @SerializedName("d_address")
     @Expose
     private String dAddress;
     @SerializedName("d_latitude")
     @Expose
-    private Double dLatitude;
+    private Float dLatitude;
     @SerializedName("d_longitude")
     @Expose
-    private Double dLongitude;
+    private Float dLongitude;
     @SerializedName("assigned_at")
     @Expose
     private String assignedAt;
     @SerializedName("schedule_at")
     @Expose
-    private String scheduleAt;
+    private Object scheduleAt;
     @SerializedName("started_at")
     @Expose
     private Object startedAt;
@@ -103,15 +103,7 @@ public class CancelTripResponse {
     private String updatedAt;
     @SerializedName("user")
     @Expose
-    private CancelTripUser user;
-
-    public CancelTripUser getUser() {
-        return user;
-    }
-
-    public void setUser(CancelTripUser user) {
-        this.user = user;
-    }
+    private User user;
 
     public Integer getId() {
         return id;
@@ -233,19 +225,19 @@ public class CancelTripResponse {
         this.sAddress = sAddress;
     }
 
-    public Double getSLatitude() {
+    public Float getSLatitude() {
         return sLatitude;
     }
 
-    public void setSLatitude(Double sLatitude) {
+    public void setSLatitude(Float sLatitude) {
         this.sLatitude = sLatitude;
     }
 
-    public Double getSLongitude() {
+    public Float getSLongitude() {
         return sLongitude;
     }
 
-    public void setSLongitude(Double sLongitude) {
+    public void setSLongitude(Float sLongitude) {
         this.sLongitude = sLongitude;
     }
 
@@ -257,19 +249,19 @@ public class CancelTripResponse {
         this.dAddress = dAddress;
     }
 
-    public Double getDLatitude() {
+    public Float getDLatitude() {
         return dLatitude;
     }
 
-    public void setDLatitude(Double dLatitude) {
+    public void setDLatitude(Float dLatitude) {
         this.dLatitude = dLatitude;
     }
 
-    public Double getDLongitude() {
+    public Float getDLongitude() {
         return dLongitude;
     }
 
-    public void setDLongitude(Double dLongitude) {
+    public void setDLongitude(Float dLongitude) {
         this.dLongitude = dLongitude;
     }
 
@@ -281,11 +273,11 @@ public class CancelTripResponse {
         this.assignedAt = assignedAt;
     }
 
-    public String getScheduleAt() {
+    public Object getScheduleAt() {
         return scheduleAt;
     }
 
-    public void setScheduleAt(String scheduleAt) {
+    public void setScheduleAt(Object scheduleAt) {
         this.scheduleAt = scheduleAt;
     }
 
@@ -367,6 +359,14 @@ public class CancelTripResponse {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

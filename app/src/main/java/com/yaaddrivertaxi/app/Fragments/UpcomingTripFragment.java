@@ -48,9 +48,7 @@ public class UpcomingTripFragment extends Fragment implements UpcomingAdapter.de
         view= inflater.inflate(R.layout.fragment_upcoming_trip, container, false);
         Services mApi = Utils.getApiService();
         Log.e("schedule", "onCreateView: ");
-
 //        String Token = ((Response) LocalPersistence.readObjectFromFile(getActivity())).getAccessToken();
-
         return view;
     }
 
@@ -66,7 +64,6 @@ public class UpcomingTripFragment extends Fragment implements UpcomingAdapter.de
             public void onResponse(Call<List<UpcomingResponse>> call, retrofit2.Response<List<UpcomingResponse>> response) {
                 if (response.isSuccessful()) {
                     Log.e("schedule", "onResponse: " );
-
                     mRecyclerView = (RecyclerView) view.findViewById(R.id.card_list2);
 
                     // Determine the number of columns to display, based on screen width.

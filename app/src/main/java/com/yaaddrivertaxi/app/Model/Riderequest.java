@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Riderequest implements Serializable
 {
 
-    private String name,locationName,destinationName,requestId;
+    private String name,locationName,destinationName,requestId,userImage;
     private String userlocationlat,userlocationlong,destlat,destlng;
     private boolean status,isArrived;
 
@@ -21,8 +21,13 @@ public class Riderequest implements Serializable
         return isArrived;
     }
 
+    public String getUserImage() {
+        return userImage;
+    }
 
-
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
 
     public void setArrived(boolean arrived) {
         isArrived = arrived;
@@ -61,7 +66,7 @@ public class Riderequest implements Serializable
         this.destlng = destlng;
     }
 
-    public Riderequest(String name, String locationName, String destinationName, String requestId, String userlocationlat, String userlocationlong, String destlat, String destlng) {
+    public Riderequest(String name, String locationName, String destinationName, String requestId, String userlocationlat, String userlocationlong, String destlat, String destlng,String userImage) {
         this.name = name;
         this.locationName = locationName;
         this.destinationName = destinationName;
@@ -70,6 +75,7 @@ public class Riderequest implements Serializable
         this.userlocationlong = userlocationlong;
         this.destlat = destlat;
         this.destlng = destlng;
+        this.userImage=userImage;
     }
 
     public String getName() {

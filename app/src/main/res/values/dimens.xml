@@ -9,7 +9,7 @@
     <dimen name="toolbar_top">10dp</dimen>
     <dimen name="where_to_go_size">48dp</dimen>
     <dimen name="where_to_go_text_size">18sp</dimen>
-    <dimen name="top">20dp</dimen>
+    <dimen name="top">5dp</dimen>
     <dimen name="bottom">40dp</dimen>
     <dimen name="sides">20dp</dimen>
     <dimen name="emailleftmargin">20dp</dimen>

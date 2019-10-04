@@ -139,11 +139,7 @@ mBackbtn.setOnClickListener(new View.OnClickListener() {
                         Bundle bundle=new Bundle();
                         bundle.putSerializable("responce",response.body());
                         intent.putExtras(bundle);
-
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-
-
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 //                        Toast.makeText(Password.this, "Successfully login", Toast.LENGTH_SHORT).show();

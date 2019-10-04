@@ -69,7 +69,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 payload.get("s_lat"),
                 payload.get("s_lng"),
                 payload.get("d_lat"),
-                payload.get("d_lng"));
+                payload.get("d_lng"),
+                payload.get("u_img"));
         LocalPersistence.witeObjectToFile(getApplicationContext(),request,"map");
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
         stackBuilder.addNextIntentWithParentStack(resultIntent);
