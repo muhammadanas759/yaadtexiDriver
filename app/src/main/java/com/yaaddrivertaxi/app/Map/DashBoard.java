@@ -256,7 +256,8 @@ public class DashBoard extends AppCompatActivity
                         setMainMapWithDrawer();
                         getcurrentLocation();
                         if (mCurrentLocationLongitudeLatitutde != null)
-                            timer.start();
+                            if(timer!=null)
+                                timer.start();
                     }
                 }
             } else {
@@ -266,7 +267,8 @@ public class DashBoard extends AppCompatActivity
                 setMainMapWithDrawer();
                 getcurrentLocation();
                 if (mCurrentLocationLongitudeLatitutde != null)
-                    timer.start();
+                    if(timer!=null)
+                        timer.start();
 
             }
         }
@@ -329,11 +331,12 @@ else{
                         acceptRequest(map.getRequestId(), 0);
 
                     }
+
                 });
 
 
                 mCancel.setOnClickListener(v -> {
-                    CancelRequest(map.getRequestId(),true);
+                    CancelRequest(map.getRequestId(),true)                                                                                                                                                                  ;
 
                 });
 
@@ -635,6 +638,7 @@ public void statusdriver(String status,String id){
         Log.e("where", "in  UpdateLocation");
         changeMarker();
         callUpdateLocation();
+        if(timer!=null)
         timer.start();
     }
 
@@ -1698,7 +1702,7 @@ public void statusdriver(String status,String id){
                     getcurrentLocation();
 
                     if (mCurrentLocationLongitudeLatitutde != null)
-                        timer.start();
+                        if(timer!=null)  timer.start();
 
                 }
             } else {
@@ -1710,6 +1714,7 @@ public void statusdriver(String status,String id){
                 getcurrentLocation();
 
                 if (mCurrentLocationLongitudeLatitutde != null)
+                    if(timer!=null)
                     timer.start();
             }
         }
