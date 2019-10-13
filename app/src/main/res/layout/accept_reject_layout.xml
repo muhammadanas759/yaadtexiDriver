@@ -40,12 +40,39 @@
         />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/acceptUserimage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_margin="10dp"/>
 
 </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/top"
+            android:weightSum="1"
+            >
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="30dp"
+                android:text="Scheduled at:"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/back"
+                android:gravity="center"
+                />
 
+
+            <TextView
+                android:id="@+id/sch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text=" nothing"
+                android:textColor="@color/back"
+                android:gravity="left|center"
+                />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +97,6 @@
                 android:text="Pickup:"
                 android:textColor="@color/back"
                 android:gravity="left|center"
-                android:singleLine="true"
                 android:layout_weight=".8"
                 />
         </LinearLayout>
@@ -99,13 +125,12 @@
                 android:textSize="14dp"
                 android:text="Pickup:"
                 android:textColor="@color/back"
-                android:singleLine="true"
                 android:gravity="left|center"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="70dp"
             android:background="@color/white"
             android:orientation="horizontal">
 

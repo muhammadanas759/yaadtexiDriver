@@ -87,7 +87,7 @@ public interface Services {
     Call<StatusResponse> StatusUpdate(@Header("Authorization") String token,
                                       @Query("service_status") String service_status);
 
-    @PUT("api/provider/yaad/trip/update/status")
+    @POST("api/provider/yaad/trip/update/status")
     Call<DriverStatusResponse> DriverStatus(@Header("Authorization") String token,
                                             @Query("status") String status,
                                             @Query("id") String id);

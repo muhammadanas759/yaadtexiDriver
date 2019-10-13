@@ -102,8 +102,8 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
 
                     String[] dateAndTime = pastTripDetailResponse.getAssignedAt().split(" ");
 
-                    fname.setText(pastTripDetailResponse.getUser().getFirstName());
-                    lname.setText(pastTripDetailResponse.getUser().getLastName());
+//                    fname.setText(pastTripDetailResponse.getUser().getFirstName());
+//                    lname.setText(pastTripDetailResponse.getUser().getLastName());
 
                     Date dates = null;
                     Date times = null;
@@ -127,10 +127,10 @@ public class TripDetails extends AppCompatActivity implements OnMapReadyCallback
                     }
                     bookingId.setText(pastTripDetailResponse.getBookingId());
 
-                    Picasso.get()
-                            .load("http://yaadtaxi.com/userprofilepics/" + pastTripDetailResponse.getUser().getPicture())
-                            .placeholder(R.drawable.ic_dummy_user)
-                            .into(userImage);
+//                    Picasso.get()
+//                            .load("http://yaadtaxi.com/userprofilepics/" + pastTripDetailResponse.getUser().getPicture())
+//                            .placeholder(R.drawable.ic_dummy_user)
+//                            .into(userImage);
 
 
 

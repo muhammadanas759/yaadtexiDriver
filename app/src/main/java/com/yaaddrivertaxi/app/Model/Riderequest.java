@@ -7,14 +7,23 @@ public class Riderequest implements Serializable
 
     private String name,locationName,destinationName,requestId,userImage;
     private String userlocationlat,userlocationlong,destlat,destlng;
-    private boolean status,isArrived;
+    private String ridestatus,schdule_at;
+    private boolean isArrived,status;
+
+    public boolean isStatus() {
+        return status;
+    }
 
     public void setStatus(boolean status) {
         this.status = status;
     }
 
-    public boolean isStatus() {
-        return status;
+    public String getRidestatus() {
+        return ridestatus;
+    }
+
+    public void setRidestatus(String ridestatus) {
+        this.ridestatus = ridestatus;
     }
 
     public boolean isArrived() {
@@ -66,7 +75,7 @@ public class Riderequest implements Serializable
         this.destlng = destlng;
     }
 
-    public Riderequest(String name, String locationName, String destinationName, String requestId, String userlocationlat, String userlocationlong, String destlat, String destlng,String userImage) {
+    public Riderequest(String name, String locationName, String destinationName, String requestId, String userlocationlat, String userlocationlong, String destlat, String destlng,String userImage, String status) {
         this.name = name;
         this.locationName = locationName;
         this.destinationName = destinationName;
@@ -76,6 +85,15 @@ public class Riderequest implements Serializable
         this.destlat = destlat;
         this.destlng = destlng;
         this.userImage=userImage;
+        this.ridestatus=status;
+    }
+
+    public String getSchdule_at() {
+        return schdule_at;
+    }
+
+    public void setSchdule_at(String schdule_at) {
+        this.schdule_at = schdule_at;
     }
 
     public String getName() {

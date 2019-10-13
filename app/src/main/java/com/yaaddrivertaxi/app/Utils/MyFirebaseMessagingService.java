@@ -58,7 +58,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        final PendingIntent pendingIntent=PendingIntent.getActivity(this,12,intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        String finalMessage = "You have a new Ride ";
+        String finalMessage = "you have Ride Request ";
 
         Intent resultIntent = new Intent(getApplicationContext(), DashBoard.class);
         resultIntent.putExtra("request",true);
@@ -70,7 +70,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 payload.get("s_lng"),
                 payload.get("d_lat"),
                 payload.get("d_lng"),
-                payload.get("u_img"));
+                payload.get("u_img"),
+                payload.get("status")
+        );
+        Log.e("FCM", "onMessageReceived: "+request.getRidestatus());
+        if(request.getRidestatus().equals("1")){
+            finalMessage="Upcoming Ride Request";
+            request.setSchdule_at(payload.get("name"));
+        }
+
         LocalPersistence.witeObjectToFile(getApplicationContext(),request,"map");
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
         stackBuilder.addNextIntentWithParentStack(resultIntent);

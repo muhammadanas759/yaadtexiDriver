@@ -280,10 +280,6 @@ public class DashBoard extends AppCompatActivity
         if (map != null) {
             mAcceptAndReject = findViewById(R.id.accepts);
             if (!map.isStatus()) {
-
-
-
-
                 findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
                 mAcceptAndReject.setVisibility(View.VISIBLE);
 
@@ -299,11 +295,18 @@ public class DashBoard extends AppCompatActivity
 
                 TextView name = mAcceptAndReject.findViewById(R.id.name);
                 TextView to = mAcceptAndReject.findViewById(R.id.pickuplocation);
+                TextView sch_at = mAcceptAndReject.findViewById(R.id.sch);
+
                 CircleImageView imageView = mAcceptAndReject.findViewById(R.id.acceptUserimage);
 
 
                 TextView from = mAcceptAndReject.findViewById(R.id.dropoflocation);
-
+if(map.getRidestatus().equals(1)){
+    sch_at.setText(map.getSchdule_at());
+}
+else{
+    sch_at.setVisibility(View.GONE);
+}
 
                 name.setText(map.getName());
                 to.setText(map.getLocationName());
@@ -319,8 +322,13 @@ public class DashBoard extends AppCompatActivity
 
                 String id = "";
                 mAccept.setOnClickListener(v -> {
-                    acceptRequest(map.getRequestId());
+                    if(map.getRidestatus().equals("1")) {
+                        scheduleride(map.getRequestId());
+                    }
+                    else{
+                        acceptRequest(map.getRequestId(), 0);
 
+                    }
                 });
 
 
@@ -341,6 +349,63 @@ public class DashBoard extends AppCompatActivity
         }
 
     }
+    private void scheduleride(String id){
+        String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
+
+        Riderequest maps= (Riderequest) LocalPersistence.readObjectFromFile(this,"map");
+
+        FirebaseDatabase mDatabase= FirebaseDatabase.getInstance();
+        DatabaseReference mRef = mDatabase.getReference();
+
+
+        mApi.AcceptRideRequest("Bearer " + Token,
+                id).enqueue(new Callback<AcceptRideResponse>() {
+            @Override
+            public void onResponse(Call<AcceptRideResponse> call, Response<AcceptRideResponse>response) {
+
+                if (response.isSuccessful()) {
+
+                    AcceptRideResponse ride=  response.body();
+                    Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom);
+                        Toast.makeText(DashBoard.this, "Ride Scheduled", Toast.LENGTH_SHORT).show();
+                    FirebaseDatabase mDatabase= FirebaseDatabase.getInstance();
+                    DatabaseReference mRef = mDatabase.getReference();
+
+                    mAcceptAndReject.setVisibility(View.GONE);
+                    mAcceptAndReject.startAnimation(slideDown);
+                    findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
+                    Riderequest maps= (Riderequest) LocalPersistence.readObjectFromFile(getApplicationContext(),"map");
+
+                    DriverModel model =new DriverModel(maps.getRequestId(),
+                            ((AcceptRideResponse)response.body()).getUser().getDeviceToken(),
+                            maps.getName(),
+                            "5");
+
+                    mRef.child("Users").child(maps.getRequestId()).setValue(model);
+                    maps.setStatus(true);
+                    LocalPersistence.deletefile(getApplicationContext(),"map");
+                    mGoOffline.setVisibility(View.VISIBLE);
+                    map.clear();
+                    getcurrentLocation();
+
+
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<AcceptRideResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+            }
+        });
+
+        map.setOnMapClickListener(null);
+
+
+
+
+    }
 
     private void changeTheMap() {
 
@@ -353,10 +418,6 @@ public class DashBoard extends AppCompatActivity
             end.setOnClickListener(v->{
                     updateFirebase(2);
                     statusdriver("DROPPED",map.getRequestId());
-//                    CancelRequest(map.getRequestId(),false);
-//                    LocalPersistence.deletefile(getApplicationContext(),"map");
-
-
             });
             DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
             String url = helper.getDirectionsUrl(new LatLng(Double.valueOf(map.getUserlocationlat()),
@@ -371,7 +432,6 @@ public class DashBoard extends AppCompatActivity
             arrive.setOnClickListener(v->{
                 updateFirebase(1);
                 statusdriver("ARRIVED",map.getRequestId());
-                statusdriver("PICKEDUP",map.getRequestId());
                 this.map.clear();
                 DrawingHelper helper = new DrawingHelper(this.map, getApplicationContext());
                 String url = helper.getDirectionsUrl(new LatLng(Double.valueOf(map.getUserlocationlat()),
@@ -415,6 +475,8 @@ public void statusdriver(String status,String id){
                         if(status.equals("ARRIVED")){
                             dialog.dismiss();
                             Toast.makeText(DashBoard.this, "arrived", Toast.LENGTH_SHORT).show();
+                            statusdriver("PICKEDUP",id);
+
                         }
                         else if(status.equals("PICKEDUP")){
                             dialog.dismiss();
@@ -472,7 +534,6 @@ public void statusdriver(String status,String id){
         map.setArrived(true);
         LocalPersistence.witeObjectToFile(getApplicationContext(),map,"map");
       }
-
     private void CancelRequest(String id,boolean check) {
         User user = ((User) LocalPersistence.readObjectFromFile(DashBoard.this));
 
@@ -494,7 +555,7 @@ public void statusdriver(String status,String id){
                         findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
                         Riderequest maps= (Riderequest) LocalPersistence.readObjectFromFile(getApplicationContext(),"map");
                         Toast.makeText(DashBoard.this, "Ride has been Rejected", Toast.LENGTH_SHORT).show();
-    DriverModel model = new DriverModel(maps.getRequestId(), cancelTripResponse.getUser().getDeviceToken(), user.getmFirstName().concat(" " + user.getmLastName()), "3");
+    DriverModel model = new DriverModel(maps.getRequestId(), cancelTripResponse.getUser().getDeviceToken(),maps.getName(), "3");
     mRef.child("Users").child(maps.getRequestId()).setValue(model);
                         LocalPersistence.deletefile(getApplicationContext(),"map");
                         mGoOffline.setVisibility(View.VISIBLE);
@@ -516,7 +577,7 @@ public void statusdriver(String status,String id){
 
     AcceptRideResponse ride;
 
-    private void acceptRequest(String id) {
+    private void acceptRequest(String id,int st) {
 
         String Token = ((User) LocalPersistence.readObjectFromFile(DashBoard.this)).getAccessToken();
 
@@ -547,7 +608,10 @@ public void statusdriver(String status,String id){
                             helper.run(url);
 
 
-                            DriverModel model =new DriverModel(maps.getRequestId(),((AcceptRideResponse)response.body()).getUser().getDeviceToken(),((AcceptRideResponse)response.body()).getUser().getFirstName().concat(" "+((AcceptRideResponse)response.body()).getUser().getLastName()),"0");
+                            DriverModel model =new DriverModel(maps.getRequestId(),
+                                    ((AcceptRideResponse)response.body()).getUser().getDeviceToken(),
+                                    maps.getName(),
+                                    String.valueOf(st));
 
                             mRef.child("Users").child(maps.getRequestId()).setValue(model);
                             maps.setStatus(true);
